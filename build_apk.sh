@@ -28,14 +28,15 @@ flutter build apk --debug
 if [ -f "build/app/outputs/flutter-apk/app-debug.apk" ]; then
     # Copia o APK para o projeto original
     echo "📱 Preparando APK para download..."
-    cp build/app/outputs/flutter-apk/app-debug.apk ../AppGymFlow/gymflow.apk
+    mkdir -p ../AppGymFlow/build/app/outputs/flutter-apk/
+    cp build/app/outputs/flutter-apk/app-debug.apk ../AppGymFlow/build/app/outputs/flutter-apk/app-debug.apk
     
     echo "✅ Build concluído com sucesso!"
     echo "⬇️ Iniciando download automático..."
     
-    # Volta para o diretório original e inicia o download
+    # Inicia o download
     cd ../AppGymFlow
-    download gymflow.apk
+    download build/app/outputs/flutter-apk/app-debug.apk
     
     # Limpa o projeto temporário
     cd ..
