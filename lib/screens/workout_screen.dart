@@ -4,7 +4,7 @@ import '../models/workout_model.dart';
 import '../models/exercise_model.dart';
 import '../providers/workout_provider.dart';
 import '../widgets/custom_button.dart';
-import '../widgets/exercise_list_item.dart';
+import '../widgets/exercise_list_tile.dart';
 import '../widgets/add_exercise_sheet.dart';
 
 class WorkoutScreen extends StatefulWidget {
