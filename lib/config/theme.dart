@@ -49,7 +49,9 @@ class AppTheme {
         secondary: secondaryColor,
         error: errorColor,
       ),
-      fontFamily: 'Poppins',
+      textTheme: const TextTheme().apply(
+        fontFamily: 'Poppins',
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.grey[900],
         elevation: 0,
