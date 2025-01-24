@@ -1,11 +1,11 @@
 class ExerciseModel {
   final String id;
   final String name;
-  int sets;
-  int reps;
-  double? weight;
-  String? notes;
-  bool isCompleted;
+  final int sets;
+  final int reps;
+  final double? weight;
+  final String? notes;
+  final bool isCompleted;
 
   ExerciseModel({
     required this.id,
@@ -19,13 +19,13 @@ class ExerciseModel {
 
   factory ExerciseModel.fromJson(Map<String, dynamic> json) {
     return ExerciseModel(
-      id: json['id'],
-      name: json['name'],
-      sets: json['sets'],
-      reps: json['reps'],
-      weight: json['weight']?.toDouble(),
-      notes: json['notes'],
-      isCompleted: json['isCompleted'] ?? false,
+      id: json['id'] as String,
+      name: json['name'] as String,
+      sets: json['sets'] as int,
+      reps: json['reps'] as int,
+      weight: json['weight'] as double?,
+      notes: json['notes'] as String?,
+      isCompleted: json['isCompleted'] as bool? ?? false,
     );
   }
 

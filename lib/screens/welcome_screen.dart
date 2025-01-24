@@ -3,23 +3,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth_provider.dart';
+import '../providers/auth_provider.dart' as app_auth;
 import '../screens/login_screen.dart';
 import '../screens/register_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../widgets/custom_button.dart';
+import '../config/routes.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  static const String routeName = '/welcome';
-
   const WelcomeScreen({Key? key}) : super(key: key);
 
   Future<void> _handleGoogleSignIn(BuildContext context) async {
     try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final authProvider = Provider.of<app_auth.AuthProvider>(context, listen: false);
       await authProvider.signInWithGoogle();
       if (context.mounted) {
-        Navigator.pushReplacementNamed(context, DashboardScreen.routeName);
+        Navigator.pushReplacementNamed(context, Routes.dashboard);
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -68,17 +67,13 @@ class WelcomeScreen extends StatelessWidget {
               // Botões de ação
               CustomButton(
                 text: 'Criar Conta',
-                onPressed: () {
-                  Navigator.pushNamed(context, RegisterScreen.routeName);
-                },
+                onPressed: () => Navigator.pushNamed(context, Routes.register),
                 isPrimary: true,
               ),
               const SizedBox(height: 16.0),
               CustomButton(
                 text: 'Já tenho conta',
-                onPressed: () {
-                  Navigator.pushNamed(context, LoginScreen.routeName);
-                },
+                onPressed: () => Navigator.pushNamed(context, Routes.login),
                 isPrimary: false,
               ),
               const SizedBox(height: 24.0),
