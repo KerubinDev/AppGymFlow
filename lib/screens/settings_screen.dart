@@ -37,58 +37,8 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.dark_mode),
             title: const Text('Tema'),
-            subtitle: const Text('Alterar entre tema claro e escuro'),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text('Escolher tema'),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        RadioListTile<ThemeMode>(
-                          title: const Text('Sistema'),
-                          value: ThemeMode.system,
-                          groupValue: Provider.of<ThemeProvider>(context).themeMode,
-                          onChanged: (ThemeMode? value) {
-                            if (value != null) {
-                              Provider.of<ThemeProvider>(context, listen: false)
-                                  .setThemeMode(value);
-                              Navigator.pop(context);
-                            }
-                          },
-                        ),
-                        RadioListTile<ThemeMode>(
-                          title: const Text('Claro'),
-                          value: ThemeMode.light,
-                          groupValue: Provider.of<ThemeProvider>(context).themeMode,
-                          onChanged: (ThemeMode? value) {
-                            if (value != null) {
-                              Provider.of<ThemeProvider>(context, listen: false)
-                                  .setThemeMode(value);
-                              Navigator.pop(context);
-                            }
-                          },
-                        ),
-                        RadioListTile<ThemeMode>(
-                          title: const Text('Escuro'),
-                          value: ThemeMode.dark,
-                          groupValue: Provider.of<ThemeProvider>(context).themeMode,
-                          onChanged: (ThemeMode? value) {
-                            if (value != null) {
-                              Provider.of<ThemeProvider>(context, listen: false)
-                                  .setThemeMode(value);
-                              Navigator.pop(context);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
+            subtitle: const Text('Alterar tema do aplicativo'),
+            onTap: () => _showThemeDialog(context),
           ),
           const Divider(),
           ListTile(
@@ -109,13 +59,15 @@ class SettingsScreen extends StatelessWidget {
             onTap: () {
               showAboutDialog(
                 context: context,
-                applicationName: 'FitTracker',
+                applicationName: 'GymFlow',
                 applicationVersion: '1.0.0',
-                applicationIcon: const FlutterLogo(size: 50),
-                children: [
-                  const Text(
-                    'Um aplicativo para acompanhamento de treinos e progresso físico.',
-                  ),
+                applicationIcon: const Icon(
+                  Icons.fitness_center,
+                  size: 50,
+                  color: Colors.blue,
+                ),
+                children: const [
+                  Text('Um aplicativo para acompanhamento de treinos'),
                 ],
               );
             },
@@ -168,6 +120,52 @@ class SettingsScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showThemeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Escolher Tema'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RadioListTile<ThemeMode>(
+                title: const Text('Sistema'),
+                value: ThemeMode.system,
+                groupValue: Provider.of<ThemeProvider>(context).themeMode,
+                onChanged: (value) {
+                  Provider.of<ThemeProvider>(context, listen: false)
+                      .setThemeMode(value!);
+                  Navigator.pop(context);
+                },
+              ),
+              RadioListTile<ThemeMode>(
+                title: const Text('Claro'),
+                value: ThemeMode.light,
+                groupValue: Provider.of<ThemeProvider>(context).themeMode,
+                onChanged: (value) {
+                  Provider.of<ThemeProvider>(context, listen: false)
+                      .setThemeMode(value!);
+                  Navigator.pop(context);
+                },
+              ),
+              RadioListTile<ThemeMode>(
+                title: const Text('Escuro'),
+                value: ThemeMode.dark,
+                groupValue: Provider.of<ThemeProvider>(context).themeMode,
+                onChanged: (value) {
+                  Provider.of<ThemeProvider>(context, listen: false)
+                      .setThemeMode(value!);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 } 

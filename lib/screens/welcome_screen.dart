@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../config/routes.dart';
 import '../widgets/custom_button.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -10,36 +9,38 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Logo e título
               const Icon(
                 Icons.fitness_center,
                 size: 100,
                 color: Colors.blue,
               ),
-              const SizedBox(height: 48.0),
+              const SizedBox(height: 32),
               Text(
-                'Bem-vindo ao FitTracker',
+                'Bem-vindo ao GymFlow',
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24.0),
-              Text(
+              const SizedBox(height: 16),
+              const Text(
                 'Acompanhe seus treinos e evolua com a gente',
-                style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
               ),
-              const SizedBox(height: 48.0),
-
-              // Botões de ação
+              const SizedBox(height: 48),
               CustomButton(
-                text: 'Começar',
-                onPressed: () => Navigator.pushReplacementNamed(context, Routes.dashboard),
-                isPrimary: true,
+                text: 'Começar Treino',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DashboardScreen(),
+                    ),
+                  );
+                },
               ),
             ],
           ),
