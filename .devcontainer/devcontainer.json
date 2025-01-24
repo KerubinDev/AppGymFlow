@@ -1,6 +1,6 @@
 {
     "name": "Flutter",
-    "image": "cirrusci/flutter:stable",
+    "image": "cirrusci/flutter:3.19.3",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {},
         "ghcr.io/devcontainers/features/git:1": {},
