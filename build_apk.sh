@@ -64,11 +64,14 @@ if [ -f "build/app/outputs/flutter-apk/app-debug.apk" ]; then
     cp build/app/outputs/flutter-apk/app-debug.apk ../AppGymFlow/build/app/outputs/flutter-apk/app-debug.apk
     
     echo "✅ Build concluído com sucesso!"
-    echo "⬇️ Iniciando download automático..."
-    
-    # Inicia o download
-    cd ../AppGymFlow
-    download build/app/outputs/flutter-apk/app-debug.apk
+    echo "📲 O APK está disponível em:"
+    echo "   /workspaces/AppGymFlow/build/app/outputs/flutter-apk/app-debug.apk"
+    echo ""
+    echo "💡 Para baixar:"
+    echo "1. No VS Code, abra o explorador de arquivos"
+    echo "2. Navegue até AppGymFlow/build/app/outputs/flutter-apk/"
+    echo "3. Clique com o botão direito em app-debug.apk"
+    echo "4. Selecione 'Download'"
     
     # Limpa o projeto temporário
     cd ..
