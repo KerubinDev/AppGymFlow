@@ -1,47 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'config/routes.dart';
-import 'config/theme.dart';
-import 'providers/workout_provider.dart';
-import 'providers/theme_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/welcome_screen.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  
-  runApp(MyApp(prefs: prefs));
+void main() {
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final SharedPreferences prefs;
-
-  const MyApp({
-    Key? key,
-    required this.prefs,
-  }) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => WorkoutProvider()),
-        ChangeNotifierProvider(create: (_) => ThemeProvider(prefs)),
-      ],
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return MaterialApp(
-            title: 'FitTracker',
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: themeProvider.themeMode,
-            home: const WelcomeScreen(),
-            routes: Routes.getRoutes(),
-            debugShowCheckedModeBanner: false,
-          );
-        },
+    return MaterialApp(
+      title: 'FitTracker',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
       ),
+      home: const WelcomeScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 } 
