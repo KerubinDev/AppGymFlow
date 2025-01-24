@@ -8,10 +8,42 @@ cd ..
 rm -rf temp_app
 flutter create -t app temp_app
 
+# Cria estrutura de diretórios
+echo "📂 Criando estrutura de diretórios..."
+mkdir -p temp_app/assets/{icons,fonts,images}
+
+# Cria um pubspec.yaml simplificado
+echo "📝 Configurando pubspec.yaml..."
+cat > temp_app/pubspec.yaml << 'EOL'
+name: app_gym_flow
+description: Um aplicativo para acompanhamento de treinos e progresso físico.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.19.0 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  provider: ^6.0.5
+  shared_preferences: ^2.1.1
+  intl: ^0.17.0
+  fl_chart: ^0.55.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+EOL
+
 # Copia os arquivos necessários
 echo "📋 Copiando arquivos..."
 cp -r AppGymFlow/lib/* temp_app/lib/
-cp AppGymFlow/pubspec.yaml temp_app/
 
 # Entra no projeto temporário
 cd temp_app
