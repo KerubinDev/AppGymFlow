@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
-import '../config/routes.dart';
 import '../providers/theme_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -16,25 +14,6 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text('Perfil'),
-            subtitle: const Text('Editar informações pessoais'),
-            onTap: () => Navigator.pushNamed(context, Routes.profile),
-          ),
-          ListTile(
-            leading: const Icon(Icons.notifications),
-            title: const Text('Notificações'),
-            subtitle: const Text('Configurar lembretes de treino'),
-            onTap: () {
-              // TODO: Implementar configurações de notificações
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Em desenvolvimento'),
-                ),
-              );
-            },
-          ),
-          ListTile(
             leading: const Icon(Icons.dark_mode),
             title: const Text('Tema'),
             subtitle: const Text('Alterar tema do aplicativo'),
@@ -42,17 +21,16 @@ class SettingsScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.help),
-            title: const Text('Ajuda'),
+            leading: const Icon(Icons.notifications),
+            title: const Text('Notificações'),
+            subtitle: const Text('Configurar lembretes'),
             onTap: () {
-              // TODO: Implementar tela de ajuda
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Em desenvolvimento'),
-                ),
+                const SnackBar(content: Text('Em desenvolvimento')),
               );
             },
           ),
+          const Divider(),
           ListTile(
             leading: const Icon(Icons.info),
             title: const Text('Sobre'),
@@ -70,52 +48,6 @@ class SettingsScreen extends StatelessWidget {
                   Text('Um aplicativo para acompanhamento de treinos'),
                 ],
               );
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.logout, color: Colors.red),
-            title: const Text(
-              'Sair',
-              style: TextStyle(color: Colors.red),
-            ),
-            onTap: () async {
-              final confirmed = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Confirmar saída'),
-                  content: const Text('Tem certeza que deseja sair?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      child: const Text('Cancelar'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      child: const Text('Sair'),
-                    ),
-                  ],
-                ),
-              );
-
-              if (confirmed == true && context.mounted) {
-                try {
-                  await Provider.of<AuthProvider>(context, listen: false)
-                      .signOut();
-                  if (context.mounted) {
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/', (route) => false);
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Erro ao fazer logout: ${e.toString()}'),
-                      ),
-                    );
-                  }
-                }
-              }
             },
           ),
         ],
@@ -137,9 +69,11 @@ class SettingsScreen extends StatelessWidget {
                 value: ThemeMode.system,
                 groupValue: Provider.of<ThemeProvider>(context).themeMode,
                 onChanged: (value) {
-                  Provider.of<ThemeProvider>(context, listen: false)
-                      .setThemeMode(value!);
-                  Navigator.pop(context);
+                  if (value != null) {
+                    Provider.of<ThemeProvider>(context, listen: false)
+                        .setThemeMode(value);
+                    Navigator.pop(context);
+                  }
                 },
               ),
               RadioListTile<ThemeMode>(
@@ -147,9 +81,11 @@ class SettingsScreen extends StatelessWidget {
                 value: ThemeMode.light,
                 groupValue: Provider.of<ThemeProvider>(context).themeMode,
                 onChanged: (value) {
-                  Provider.of<ThemeProvider>(context, listen: false)
-                      .setThemeMode(value!);
-                  Navigator.pop(context);
+                  if (value != null) {
+                    Provider.of<ThemeProvider>(context, listen: false)
+                        .setThemeMode(value);
+                    Navigator.pop(context);
+                  }
                 },
               ),
               RadioListTile<ThemeMode>(
@@ -157,9 +93,11 @@ class SettingsScreen extends StatelessWidget {
                 value: ThemeMode.dark,
                 groupValue: Provider.of<ThemeProvider>(context).themeMode,
                 onChanged: (value) {
-                  Provider.of<ThemeProvider>(context, listen: false)
-                      .setThemeMode(value!);
-                  Navigator.pop(context);
+                  if (value != null) {
+                    Provider.of<ThemeProvider>(context, listen: false)
+                        .setThemeMode(value);
+                    Navigator.pop(context);
+                  }
                 },
               ),
             ],
