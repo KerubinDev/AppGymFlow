@@ -1,76 +1,59 @@
 import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/workout_model.dart';
+import '../models/exercise_model.dart';
 
 class WorkoutProvider with ChangeNotifier {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  List<WorkoutModel> _workouts = [];
+  final List<WorkoutModel> _workouts = [];
 
   List<WorkoutModel> get workouts => _workouts;
 
-  Future<void> fetchWorkouts(String userId) async {
-    try {
-      final snapshot = await _firestore
-          .collection('workouts')
-          .where('userId', isEqualTo: userId)
-          .orderBy('date', descending: true)
-          .get();
-
-      _workouts = snapshot.docs
-          .map((doc) => WorkoutModel.fromJson({
-                'id': doc.id,
-                ...doc.data(),
-              }))
-          .toList();
-
-      notifyListeners();
-    } catch (e) {
-      print('Error fetching workouts: $e');
-      rethrow;
-    }
-  }
-
   Future<void> addWorkout(WorkoutModel workout) async {
-    try {
-      final docRef = await _firestore.collection('workouts').add(workout.toJson());
-      final newWorkout = WorkoutModel.fromJson({
-        'id': docRef.id,
-        ...workout.toJson(),
-      });
-      _workouts.insert(0, newWorkout);
-      notifyListeners();
-    } catch (e) {
-      print('Error adding workout: $e');
-      rethrow;
-    }
+    _workouts.add(workout);
+    notifyListeners();
   }
 
   Future<void> updateWorkout(WorkoutModel workout) async {
-    try {
-      await _firestore
-          .collection('workouts')
-          .doc(workout.id)
-          .update(workout.toJson());
-
-      final index = _workouts.indexWhere((w) => w.id == workout.id);
-      if (index != -1) {
-        _workouts[index] = workout;
-        notifyListeners();
-      }
-    } catch (e) {
-      print('Error updating workout: $e');
-      rethrow;
+    final index = _workouts.indexWhere((w) => w.id == workout.id);
+    if (index != -1) {
+      _workouts[index] = workout;
+      notifyListeners();
     }
   }
 
   Future<void> deleteWorkout(String workoutId) async {
-    try {
-      await _firestore.collection('workouts').doc(workoutId).delete();
-      _workouts.removeWhere((w) => w.id == workoutId);
-      notifyListeners();
-    } catch (e) {
-      print('Error deleting workout: $e');
-      rethrow;
+    _workouts.removeWhere((w) => w.id == workoutId);
+    notifyListeners();
+  }
+
+  Future<void> toggleExerciseStatus(String workoutId, String exerciseId) async {
+    final workoutIndex = _workouts.indexWhere((w) => w.id == workoutId);
+    if (workoutIndex != -1) {
+      final workout = _workouts[workoutIndex];
+      final exerciseIndex = workout.exercises.indexWhere((e) => e.id == exerciseId);
+      if (exerciseIndex != -1) {
+        final exercise = workout.exercises[exerciseIndex];
+        final updatedExercise = ExerciseModel(
+          id: exercise.id,
+          name: exercise.name,
+          sets: exercise.sets,
+          reps: exercise.reps,
+          weight: exercise.weight,
+          notes: exercise.notes,
+          isCompleted: !exercise.isCompleted,
+        );
+        final updatedExercises = List<ExerciseModel>.from(workout.exercises);
+        updatedExercises[exerciseIndex] = updatedExercise;
+        
+        _workouts[workoutIndex] = WorkoutModel(
+          id: workout.id,
+          userId: workout.userId,
+          name: workout.name,
+          exercises: updatedExercises,
+          date: workout.date,
+          isCompleted: workout.isCompleted,
+        );
+        notifyListeners();
+      }
     }
   }
 } 
