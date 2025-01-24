@@ -17,8 +17,10 @@ if [ -f "build/app/outputs/flutter-apk/app-debug.apk" ]; then
     cp build/app/outputs/flutter-apk/app-debug.apk ./gymflow.apk
     
     echo "✅ Build concluído com sucesso!"
-    echo "📲 Seu APK está pronto: gymflow.apk"
-    echo "💡 Para baixar, clique com o botão direito em 'gymflow.apk' no explorador de arquivos e selecione 'Download'"
+    echo "⬇️ Iniciando download automático..."
+    
+    # Inicia o download automaticamente
+    download gymflow.apk
 else
     echo "❌ Erro ao gerar o APK"
     exit 1
