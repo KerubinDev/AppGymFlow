@@ -1,125 +1,146 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../widgets/custom_button.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _weightController = TextEditingController();
+  final _heightController = TextEditingController();
+  final _goalController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = Provider.of<AuthProvider>(context, listen: false).currentUser;
+    if (user != null) {
+      _nameController.text = user.name;
+      _weightController.text = user.weight?.toString() ?? '';
+      _heightController.text = user.height?.toString() ?? '';
+      _goalController.text = user.goal ?? '';
+    }
+  }
+
+  Future<void> _updateProfile() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
+      try {
+        await Provider.of<AuthProvider>(context, listen: false).updateProfile(
+          name: _nameController.text,
+          weight: double.tryParse(_weightController.text),
+          height: double.tryParse(_heightController.text),
+          goal: _goalController.text,
+        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Perfil atualizado com sucesso!')),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erro ao atualizar perfil: $e')),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Perfil'),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const CircleAvatar(
-            radius: 50,
-            child: Icon(Icons.person, size: 50),
-          ),
-          const SizedBox(height: 24),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Informações Pessoais',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildInfoRow(
-                    icon: Icons.person_outline,
-                    label: 'Nome',
-                    value: 'Usuário',
-                  ),
-                  const SizedBox(height: 8),
-                  _buildInfoRow(
-                    icon: Icons.monitor_weight,
-                    label: 'Peso',
-                    value: '70 kg',
-                  ),
-                  const SizedBox(height: 8),
-                  _buildInfoRow(
-                    icon: Icons.height,
-                    label: 'Altura',
-                    value: '1.75 m',
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Estatísticas',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildInfoRow(
-                    icon: Icons.fitness_center,
-                    label: 'Treinos Realizados',
-                    value: '12',
-                  ),
-                  const SizedBox(height: 8),
-                  _buildInfoRow(
-                    icon: Icons.calendar_today,
-                    label: 'Dias Treinados',
-                    value: '8',
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          CustomButton(
-            text: 'Editar Perfil',
+        title: const Text('Editar Perfil'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
             onPressed: () {
-              // TODO: Implementar edição de perfil
+              Provider.of<AuthProvider>(context, listen: false).logout();
+              Navigator.of(context).pushReplacementNamed('/login');
             },
           ),
         ],
       ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              const CircleAvatar(
+                radius: 50,
+                child: Icon(Icons.person, size: 50),
+              ),
+              const SizedBox(height: 24),
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nome',
+                  prefixIcon: Icon(Icons.person),
+                ),
+                validator: (value) => value?.isEmpty ?? true ? 'Campo obrigatório' : null,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _weightController,
+                decoration: const InputDecoration(
+                  labelText: 'Peso (kg)',
+                  prefixIcon: Icon(Icons.monitor_weight),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _heightController,
+                decoration: const InputDecoration(
+                  labelText: 'Altura (m)',
+                  prefixIcon: Icon(Icons.height),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _goalController,
+                decoration: const InputDecoration(
+                  labelText: 'Objetivo',
+                  prefixIcon: Icon(Icons.flag),
+                ),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 24),
+              if (_isLoading)
+                const CircularProgressIndicator()
+              else
+                CustomButton(
+                  text: 'Salvar Alterações',
+                  onPressed: _updateProfile,
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildInfoRow({
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
-    return Row(
-      children: [
-        Icon(icon, size: 20, color: Colors.blue),
-        const SizedBox(width: 8),
-        Text(
-          '$label:',
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.grey,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    );
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _weightController.dispose();
+    _heightController.dispose();
+    _goalController.dispose();
+    super.dispose();
   }
 } 

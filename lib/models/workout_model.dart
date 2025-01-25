@@ -40,4 +40,22 @@ class WorkoutModel {
       'isCompleted': isCompleted,
     };
   }
+
+  WorkoutModel copyWith({
+    String? id,
+    String? userId,
+    String? name,
+    List<ExerciseModel>? exercises,
+    DateTime? date,
+    bool? isCompleted,
+  }) {
+    return WorkoutModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      name: name ?? this.name,
+      exercises: exercises ?? this.exercises,
+      date: date ?? this.date,
+      isCompleted: isCompleted ?? this.isCompleted,
+    );
+  }
 } 

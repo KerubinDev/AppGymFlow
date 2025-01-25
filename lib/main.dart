@@ -3,9 +3,30 @@ import 'package:provider/provider.dart';
 import 'providers/workout_provider.dart';
 import 'screens/welcome_screen.dart';
 import 'config/theme.dart';
+import 'package:shared_preferences.dart';
+import 'providers/auth_provider.dart';
+import 'providers/theme_provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  final prefs = await SharedPreferences.getInstance();
+  final authProvider = AuthProvider(prefs);
+  final themeProvider = ThemeProvider(prefs);
+  final workoutProvider = WorkoutProvider();
+  
+  await workoutProvider.loadWorkouts();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: authProvider),
+        ChangeNotifierProvider.value(value: themeProvider),
+        ChangeNotifierProvider.value(value: workoutProvider),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -13,17 +34,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => WorkoutProvider()),
-      ],
-      child: MaterialApp(
-        title: 'GymFlow',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        home: const WelcomeScreen(),
-        debugShowCheckedModeBanner: false,
-      ),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'GymFlow',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeProvider.themeMode,
+          home: Consumer<AuthProvider>(
+            builder: (context, auth, _) {
+              return auth.isLoggedIn ? const DashboardScreen() : const LoginScreen();
+            },
+          ),
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
 }

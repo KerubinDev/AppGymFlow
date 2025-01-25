@@ -1,114 +1,80 @@
 import 'package:flutter/foundation.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
+import '../services/database_service.dart';
+import 'package:shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final DatabaseService _db = DatabaseService();
+  UserModel? _currentUser;
+  final SharedPreferences _prefs;
 
-  User? get currentUser => _auth.currentUser;
-
-  Future<UserCredential> signInWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
-    try {
-      final credential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return credential;
-    } catch (e) {
-      print('Error signing in with email and password: $e');
-      rethrow;
-    }
+  AuthProvider(this._prefs) {
+    _loadUser();
   }
 
-  Future<UserCredential> signUpWithEmailAndPassword(
-    String name,
-    String email,
-    String password,
-  ) async {
-    try {
-      final credential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+  UserModel? get currentUser => _currentUser;
+  bool get isLoggedIn => _currentUser != null;
 
-      // Criar documento do usuário no Firestore
-      await _firestore.collection('users').doc(credential.user!.uid).set({
-        'name': name,
-        'email': email,
-        'createdAt': DateTime.now().toIso8601String(),
-      });
-
-      return credential;
-    } catch (e) {
-      print('Error signing up with email and password: $e');
-      rethrow;
-    }
-  }
-
-  Future<UserCredential> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication? googleAuth = 
-          await googleUser?.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-
-      final userCredential = await _auth.signInWithCredential(credential);
-
-      // Verificar se é primeiro login e criar documento do usuário
-      final userDoc = await _firestore
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .get();
-
-      if (!userDoc.exists) {
-        await _firestore
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .set({
-          'name': userCredential.user!.displayName,
-          'email': userCredential.user!.email,
-          'photoUrl': userCredential.user!.photoURL,
-          'createdAt': DateTime.now().toIso8601String(),
-        });
-      }
-
-      return userCredential;
-    } catch (e) {
-      print('Error signing in with Google: $e');
-      rethrow;
-    }
-  }
-
-  Future<void> signOut() async {
-    try {
-      await Future.wait([
-        _auth.signOut(),
-        _googleSignIn.signOut(),
-      ]);
+  Future<void> _loadUser() async {
+    final userId = _prefs.getString('userId');
+    if (userId != null) {
+      // Implementar método para buscar usuário por ID
+      _currentUser = await _db.getUserById(userId);
       notifyListeners();
-    } catch (e) {
-      print('Error signing out: $e');
-      rethrow;
     }
   }
 
-  Future<void> resetPassword(String email) async {
+  Future<bool> login(String email, String password) async {
+    final user = await _db.getUser(email, password);
+    if (user != null) {
+      _currentUser = user;
+      await _prefs.setString('userId', user.id);
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> register(String name, String email, String password) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email);
+      final user = UserModel(
+        id: DateTime.now().toString(),
+        name: name,
+        email: email,
+        password: password,
+      );
+      await _db.saveUser(user);
+      _currentUser = user;
+      await _prefs.setString('userId', user.id);
+      notifyListeners();
+      return true;
     } catch (e) {
-      print('Error resetting password: $e');
-      rethrow;
+      return false;
+    }
+  }
+
+  Future<void> logout() async {
+    _currentUser = null;
+    await _prefs.remove('userId');
+    notifyListeners();
+  }
+
+  Future<void> updateProfile({
+    String? name,
+    double? weight,
+    double? height,
+    String? goal,
+  }) async {
+    if (_currentUser != null) {
+      final updatedUser = _currentUser!.copyWith(
+        name: name,
+        weight: weight,
+        height: height,
+        goal: goal,
+      );
+      await _db.updateUser(updatedUser);
+      _currentUser = updatedUser;
+      notifyListeners();
     }
   }
 } 

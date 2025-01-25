@@ -2,48 +2,62 @@ class UserModel {
   final String id;
   final String name;
   final String email;
-  String? photoUrl;
+  final String password; // Em produção, usar hash
   double? weight;
   double? height;
   String? goal;
-  DateTime? createdAt;
 
   UserModel({
     required this.id,
     required this.name,
     required this.email,
-    this.photoUrl,
+    required this.password,
     this.weight,
     this.height,
     this.goal,
-    this.createdAt,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
+  UserModel copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? password,
+    double? weight,
+    double? height,
+    String? goal,
+  }) {
     return UserModel(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      photoUrl: json['photoUrl'],
-      weight: json['weight']?.toDouble(),
-      height: json['height']?.toDouble(),
-      goal: json['goal'],
-      createdAt: json['createdAt'] != null 
-          ? DateTime.parse(json['createdAt']) 
-          : null,
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      weight: weight ?? this.weight,
+      height: height ?? this.height,
+      goal: goal ?? this.goal,
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
       'email': email,
-      'photoUrl': photoUrl,
+      'password': password,
       'weight': weight,
       'height': height,
       'goal': goal,
-      'createdAt': createdAt?.toIso8601String(),
     };
+  }
+
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      id: map['id'],
+      name: map['name'],
+      email: map['email'],
+      password: map['password'],
+      weight: map['weight'],
+      height: map['height'],
+      goal: map['goal'],
+    );
   }
 } 

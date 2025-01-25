@@ -40,4 +40,24 @@ class ExerciseModel {
       'isCompleted': isCompleted,
     };
   }
+
+  ExerciseModel copyWith({
+    String? id,
+    String? name,
+    int? sets,
+    int? reps,
+    double? weight,
+    String? notes,
+    bool? isCompleted,
+  }) {
+    return ExerciseModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      sets: sets ?? this.sets,
+      reps: reps ?? this.reps,
+      weight: weight ?? this.weight,
+      notes: notes ?? this.notes,
+      isCompleted: isCompleted ?? this.isCompleted,
+    );
+  }
 } 
