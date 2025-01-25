@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/exercise_model.dart';
 import '../widgets/custom_button.dart';
+import '../screens/exercise_library_screen.dart';
 
 class AddExerciseSheet extends StatefulWidget {
   final Function(ExerciseModel) onSave;
@@ -38,78 +39,101 @@ class _AddExerciseSheetState extends State<AddExerciseSheet> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Nome do Exercício',
-                prefixIcon: Icon(Icons.fitness_center),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, insira um nome';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _setsController,
-                    decoration: const InputDecoration(
-                      labelText: 'Séries',
-                      prefixIcon: Icon(Icons.repeat),
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Obrigatório';
-                      }
-                      return null;
-                    },
-                  ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ElevatedButton.icon(
+            icon: const Icon(Icons.library_books),
+            label: const Text('Escolher da Biblioteca'),
+            onPressed: () async {
+              final exercise = await Navigator.push<ExerciseModel>(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExerciseLibraryScreen(),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: TextFormField(
-                    controller: _repsController,
-                    decoration: const InputDecoration(
-                      labelText: 'Repetições',
-                      prefixIcon: Icon(Icons.fitness_center),
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Obrigatório';
-                      }
-                      return null;
-                    },
+              );
+              if (exercise != null) {
+                widget.onSave(exercise);
+              }
+            },
+          ),
+          const SizedBox(height: 16),
+          const Text('ou adicione manualmente:'),
+          const SizedBox(height: 16),
+          Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nome do Exercício',
+                    prefixIcon: Icon(Icons.fitness_center),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira um nome';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _setsController,
+                        decoration: const InputDecoration(
+                          labelText: 'Séries',
+                          prefixIcon: Icon(Icons.repeat),
+                        ),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Obrigatório';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _repsController,
+                        decoration: const InputDecoration(
+                          labelText: 'Repetições',
+                          prefixIcon: Icon(Icons.fitness_center),
+                        ),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Obrigatório';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _weightController,
+                  decoration: const InputDecoration(
+                    labelText: 'Peso (kg)',
+                    prefixIcon: Icon(Icons.monitor_weight),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 24),
+                CustomButton(
+                  text: 'Adicionar Exercício',
+                  onPressed: _handleSave,
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _weightController,
-              decoration: const InputDecoration(
-                labelText: 'Peso (kg)',
-                prefixIcon: Icon(Icons.monitor_weight),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 24),
-            CustomButton(
-              text: 'Adicionar Exercício',
-              onPressed: _handleSave,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
