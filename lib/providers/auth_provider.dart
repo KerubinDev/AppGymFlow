@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 import '../services/database_service.dart';
-import 'package:shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
   final DatabaseService _db = DatabaseService();

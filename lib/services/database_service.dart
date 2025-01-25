@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as path;
 import '../models/workout_model.dart';
 import '../models/exercise_model.dart';
 import '../models/user_model.dart';
@@ -18,7 +18,7 @@ class DatabaseService {
 
   Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'gymflow.db');
+    final path = path.join(dbPath, 'gymflow.db');
 
     return await openDatabase(
       path,
