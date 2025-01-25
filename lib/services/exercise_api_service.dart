@@ -1,18 +1,18 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 class ExerciseApiService {
+  final Dio _dio = Dio();
   static const String baseUrl = 'https://wger.de/api/v2';
 
   Future<List<Map<String, dynamic>>> getExercises() async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/exercise/?language=2&limit=100'), // 2 = inglês
-        headers: {'Accept': 'application/json'},
+      final response = await _dio.get(
+        '$baseUrl/exercise/?language=2&limit=100',
+        options: Options(headers: {'Accept': 'application/json'}),
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = response.data;
         return List<Map<String, dynamic>>.from(data['results']);
       } else {
         throw Exception('Falha ao carregar exercícios');
@@ -24,13 +24,13 @@ class ExerciseApiService {
 
   Future<List<Map<String, dynamic>>> getExercisesByMuscle(int muscleId) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/exercise/?muscles=$muscleId&language=2&limit=100'),
-        headers: {'Accept': 'application/json'},
+      final response = await _dio.get(
+        '$baseUrl/exercise/?muscles=$muscleId&language=2&limit=100',
+        options: Options(headers: {'Accept': 'application/json'}),
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = response.data;
         return List<Map<String, dynamic>>.from(data['results']);
       } else {
         throw Exception('Falha ao carregar exercícios');
@@ -42,13 +42,13 @@ class ExerciseApiService {
 
   Future<List<Map<String, dynamic>>> getMuscles() async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/muscle/'),
-        headers: {'Accept': 'application/json'},
+      final response = await _dio.get(
+        '$baseUrl/muscle/',
+        options: Options(headers: {'Accept': 'application/json'}),
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = response.data;
         return List<Map<String, dynamic>>.from(data['results']);
       } else {
         throw Exception('Falha ao carregar músculos');
