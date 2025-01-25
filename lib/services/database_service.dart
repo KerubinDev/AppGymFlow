@@ -1,194 +1,92 @@
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart' as path;
+import 'dart:convert';
+import 'package:shared_preferences.dart';
 import '../models/workout_model.dart';
-import '../models/exercise_model.dart';
 import '../models/user_model.dart';
 
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._();
-  static Database? _database;
-
+  final String _usersKey = 'users';
+  final String _workoutsKey = 'workouts';
+  
   DatabaseService._();
   factory DatabaseService() => _instance;
 
-  Future<Database> get database async {
-    _database ??= await _initDB();
-    return _database!;
+  Future<SharedPreferences> get _prefs => SharedPreferences.getInstance();
+
+  // Métodos para Usuários
+  Future<void> saveUser(UserModel user) async {
+    final prefs = await _prefs;
+    final users = await _getUsers();
+    users[user.id] = user;
+    
+    await prefs.setString(_usersKey, jsonEncode(
+      users.map((key, value) => MapEntry(key, value.toMap()))
+    ));
   }
 
-  Future<Database> _initDB() async {
-    final dbPath = await getDatabasesPath();
-    final path = path.join(dbPath, 'gymflow.db');
-
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _createDB,
-    );
+  Future<UserModel?> getUser(String email, String password) async {
+    final users = await _getUsers();
+    try {
+      return users.values.firstWhere(
+        (user) => user.email == email && user.password == password
+      );
+    } catch (e) {
+      return null;
+    }
   }
 
-  Future<void> _createDB(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE workouts(
-        id TEXT PRIMARY KEY,
-        userId TEXT,
-        name TEXT,
-        date TEXT,
-        isCompleted INTEGER
-      )
-    ''');
+  Future<UserModel?> getUserById(String id) async {
+    final users = await _getUsers();
+    return users[id];
+  }
 
-    await db.execute('''
-      CREATE TABLE exercises(
-        id TEXT PRIMARY KEY,
-        workoutId TEXT,
-        name TEXT,
-        sets INTEGER,
-        reps INTEGER,
-        weight REAL,
-        notes TEXT,
-        isCompleted INTEGER,
-        FOREIGN KEY (workoutId) REFERENCES workouts (id)
-      )
-    ''');
+  Future<void> updateUser(UserModel user) async {
+    await saveUser(user);
+  }
 
-    await db.execute('''
-      CREATE TABLE users(
-        id TEXT PRIMARY KEY,
-        name TEXT,
-        email TEXT UNIQUE,
-        password TEXT,
-        weight REAL,
-        height REAL,
-        goal TEXT
-      )
-    ''');
+  Future<Map<String, UserModel>> _getUsers() async {
+    final prefs = await _prefs;
+    final String? usersJson = prefs.getString(_usersKey);
+    
+    if (usersJson == null) return {};
+
+    final Map<String, dynamic> usersMap = jsonDecode(usersJson);
+    return usersMap.map((key, value) => MapEntry(
+      key,
+      UserModel.fromMap(value as Map<String, dynamic>),
+    ));
   }
 
   // Métodos para Workouts
   Future<void> saveWorkout(WorkoutModel workout) async {
-    final db = await database;
-    await db.transaction((txn) async {
-      // Salva o treino
-      await txn.insert(
-        'workouts',
-        {
-          'id': workout.id,
-          'userId': workout.userId,
-          'name': workout.name,
-          'date': workout.date.toIso8601String(),
-          'isCompleted': workout.isCompleted ? 1 : 0,
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-
-      // Salva os exercícios
-      for (final exercise in workout.exercises) {
-        await txn.insert(
-          'exercises',
-          {
-            'id': exercise.id,
-            'workoutId': workout.id,
-            'name': exercise.name,
-            'sets': exercise.sets,
-            'reps': exercise.reps,
-            'weight': exercise.weight,
-            'notes': exercise.notes,
-            'isCompleted': exercise.isCompleted ? 1 : 0,
-          },
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-      }
-    });
+    final prefs = await _prefs;
+    final workouts = await getWorkouts();
+    workouts.add(workout);
+    
+    await prefs.setString(_workoutsKey, jsonEncode(
+      workouts.map((w) => w.toJson()).toList(),
+    ));
   }
 
   Future<List<WorkoutModel>> getWorkouts() async {
-    final db = await database;
-    final workouts = await db.query('workouts');
+    final prefs = await _prefs;
+    final String? workoutsJson = prefs.getString(_workoutsKey);
     
-    return Future.wait(workouts.map((workout) async {
-      final exercises = await db.query(
-        'exercises',
-        where: 'workoutId = ?',
-        whereArgs: [workout['id']],
-      );
+    if (workoutsJson == null) return [];
 
-      return WorkoutModel(
-        id: workout['id'] as String,
-        userId: workout['userId'] as String,
-        name: workout['name'] as String,
-        date: DateTime.parse(workout['date'] as String),
-        isCompleted: (workout['isCompleted'] as int) == 1,
-        exercises: exercises.map((e) => ExerciseModel(
-          id: e['id'] as String,
-          name: e['name'] as String,
-          sets: e['sets'] as int,
-          reps: e['reps'] as int,
-          weight: e['weight'] as double?,
-          notes: e['notes'] as String?,
-          isCompleted: (e['isCompleted'] as int) == 1,
-        )).toList(),
-      );
-    }));
+    final List<dynamic> workoutsList = jsonDecode(workoutsJson);
+    return workoutsList
+        .map((w) => WorkoutModel.fromJson(w as Map<String, dynamic>))
+        .toList();
   }
 
   Future<void> deleteWorkout(String id) async {
-    final db = await database;
-    await db.transaction((txn) async {
-      await txn.delete(
-        'exercises',
-        where: 'workoutId = ?',
-        whereArgs: [id],
-      );
-      await txn.delete(
-        'workouts',
-        where: 'id = ?',
-        whereArgs: [id],
-      );
-    });
-  }
-
-  // Adicione métodos para usuários
-  Future<UserModel?> getUser(String email, String password) async {
-    final db = await database;
-    final users = await db.query(
-      'users',
-      where: 'email = ? AND password = ?',
-      whereArgs: [email, password],
-    );
-
-    if (users.isEmpty) return null;
-    return UserModel.fromMap(users.first);
-  }
-
-  Future<void> saveUser(UserModel user) async {
-    final db = await database;
-    await db.insert(
-      'users',
-      user.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  Future<void> updateUser(UserModel user) async {
-    final db = await database;
-    await db.update(
-      'users',
-      user.toMap(),
-      where: 'id = ?',
-      whereArgs: [user.id],
-    );
-  }
-
-  Future<UserModel?> getUserById(String id) async {
-    final db = await database;
-    final users = await db.query(
-      'users',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-
-    if (users.isEmpty) return null;
-    return UserModel.fromMap(users.first);
+    final prefs = await _prefs;
+    final workouts = await getWorkouts();
+    workouts.removeWhere((w) => w.id == id);
+    
+    await prefs.setString(_workoutsKey, jsonEncode(
+      workouts.map((w) => w.toJson()).toList(),
+    ));
   }
 } 
