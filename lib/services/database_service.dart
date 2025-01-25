@@ -61,6 +61,9 @@ class DatabaseService {
   Future<void> saveWorkout(WorkoutModel workout) async {
     final prefs = await _prefs;
     final workouts = await getWorkouts();
+    
+    // Remover workout existente com mesmo ID antes de adicionar
+    workouts.removeWhere((w) => w.id == workout.id);
     workouts.add(workout);
     
     await prefs.setString(_workoutsKey, jsonEncode(

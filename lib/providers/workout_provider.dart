@@ -46,7 +46,8 @@ class WorkoutProvider with ChangeNotifier {
           exercises: updatedExercises,
         );
         
-        await updateWorkout(updatedWorkout);
+        await _db.saveWorkout(updatedWorkout);
+        await loadWorkouts();
       }
     }
   }

@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import '../models/workout_model.dart';
 import '../models/exercise_model.dart';
 import '../screens/workout_details_screen.dart';
+import '../providers/workout_provider.dart';
+import 'package:provider/provider.dart';
 
 class WorkoutCard extends StatelessWidget {
   final WorkoutModel workout;
@@ -33,17 +35,45 @@ class WorkoutCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    workout.name,
-                    style: Theme.of(context).textTheme.titleLarge,
+                  Expanded(
+                    child: Text(
+                      workout.name,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                   ),
-                  Text(
-                    DateFormat('dd/MM/yyyy').format(workout.date),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey,
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Excluir Treino'),
+                          content: const Text('Tem certeza que deseja excluir este treino?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Cancelar'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Provider.of<WorkoutProvider>(context, listen: false)
+                                    .deleteWorkout(workout.id);
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Excluir', style: TextStyle(color: Colors.red)),
+                            ),
+                          ],
                         ),
+                      );
+                    },
                   ),
                 ],
+              ),
+              Text(
+                DateFormat('dd/MM/yyyy').format(workout.date),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey,
+                    ),
               ),
               const SizedBox(height: 8),
               Text(

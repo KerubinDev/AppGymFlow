@@ -32,57 +32,63 @@ class WorkoutDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Data: ${workout.date.day}/${workout.date.month}/${workout.date.year}',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Exercícios: ${workout.exercises.length}',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Lista de Exercícios',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          ...workout.exercises.map((exercise) => Card(
-                margin: const EdgeInsets.only(bottom: 8),
-                child: ListTile(
-                  title: Text(exercise.name),
-                  subtitle: Text(
-                    '${exercise.sets} séries x ${exercise.reps} repetições' +
-                        (exercise.weight != null ? ' • ${exercise.weight}kg' : ''),
-                  ),
-                  trailing: Checkbox(
-                    value: exercise.isCompleted,
-                    onChanged: (value) {
-                      if (value != null) {
-                        final provider = Provider.of<WorkoutProvider>(
-                          context,
-                          listen: false,
-                        );
-                        provider.toggleExerciseStatus(workout.id, exercise.id);
-                      }
-                    },
+      body: Consumer<WorkoutProvider>(
+        builder: (context, provider, child) {
+          final currentWorkout = provider.workouts
+              .firstWhere((w) => w.id == workout.id, orElse: () => workout);
+
+          return ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Data: ${workout.date.day}/${workout.date.month}/${workout.date.year}',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Exercícios: ${workout.exercises.length}',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
                   ),
                 ),
-              )),
-        ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Lista de Exercícios',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 8),
+              ...currentWorkout.exercises.map((exercise) => Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: ListTile(
+                      title: Text(exercise.name),
+                      subtitle: Text(
+                        '${exercise.sets} séries x ${exercise.reps} repetições' +
+                            (exercise.weight != null ? ' • ${exercise.weight}kg' : ''),
+                      ),
+                      trailing: Checkbox(
+                        value: exercise.isCompleted,
+                        onChanged: (value) {
+                          if (value != null) {
+                            provider.toggleExerciseStatus(
+                              currentWorkout.id,
+                              exercise.id,
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  )),
+            ],
+          );
+        },
       ),
     );
   }
