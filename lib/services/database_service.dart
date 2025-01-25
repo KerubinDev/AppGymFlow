@@ -179,4 +179,16 @@ class DatabaseService {
       whereArgs: [user.id],
     );
   }
+
+  Future<UserModel?> getUserById(String id) async {
+    final db = await database;
+    final users = await db.query(
+      'users',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (users.isEmpty) return null;
+    return UserModel.fromMap(users.first);
+  }
 } 
