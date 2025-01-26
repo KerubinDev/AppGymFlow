@@ -56,10 +56,11 @@ class NotificationService {
       playSound: true,
     );
 
-    // Cria os canais de notificação
-    await _notifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannels([testChannel, workoutChannel]);
+    // Cria os canais de notificação individualmente
+    final platform = _notifications.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+    await platform?.createNotificationChannel(testChannel);
+    await platform?.createNotificationChannel(workoutChannel);
 
     // Configurações de inicialização
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
