@@ -8,18 +8,36 @@ check_and_download_fonts() {
     local font_files=("Poppins-Regular.ttf" "Poppins-Medium.ttf" "Poppins-Bold.ttf")
     local base_url="https://github.com/google/fonts/raw/main/ofl/poppins"
     
+    echo "📁 Criando diretório de fontes em: $fonts_dir"
     mkdir -p "$fonts_dir"
     
     for font in "${font_files[@]}"; do
         if [ ! -f "$fonts_dir/$font" ]; then
             echo "📥 Baixando fonte $font..."
-            wget -q "$base_url/$font" -O "$fonts_dir/$font"
-            if [ $? -ne 0 ]; then
+            wget "$base_url/$font" -O "$fonts_dir/$font" || {
                 echo "❌ Erro ao baixar $font"
-                return 1
-            fi
+                echo "🔍 Tentando curl como alternativa..."
+                curl -L "$base_url/$font" -o "$fonts_dir/$font" || {
+                    echo "❌ Falha também com curl"
+                    return 1
+                }
+            }
+            echo "✅ Fonte $font baixada com sucesso"
+        else
+            echo "✓ Fonte $font já existe"
         fi
     done
+
+    # Verifica se todos os arquivos existem e têm tamanho maior que zero
+    echo "🔍 Verificando arquivos de fonte..."
+    for font in "${font_files[@]}"; do
+        if [ ! -s "$fonts_dir/$font" ]; then
+            echo "❌ Arquivo $font não existe ou está vazio"
+            return 1
+        fi
+        echo "✅ $font: $(wc -c < "$fonts_dir/$font") bytes"
+    done
+    
     return 0
 }
 
@@ -94,7 +112,28 @@ cp -r AppGymFlow/lib/* temp_app/lib/
 cp -r AppGymFlow/assets/data/exercises_db.json temp_app/assets/data/
 cp -r AppGymFlow/assets/images/* temp_app/assets/images/ 2>/dev/null || true
 cp -r AppGymFlow/assets/icons/* temp_app/assets/icons/ 2>/dev/null || true
-cp -r AppGymFlow/assets/fonts/* temp_app/assets/fonts/
+
+# Copia as fontes com verificação
+echo "📋 Copiando fontes..."
+for font in Poppins-{Regular,Medium,Bold}.ttf; do
+    if [ -f "AppGymFlow/assets/fonts/$font" ]; then
+        cp "AppGymFlow/assets/fonts/$font" "temp_app/assets/fonts/"
+        echo "✅ Copiado: $font"
+    else
+        echo "❌ Fonte não encontrada: $font"
+        exit 1
+    fi
+done
+
+# Verifica se as fontes foram copiadas corretamente
+echo "🔍 Verificando fontes copiadas..."
+for font in Poppins-{Regular,Medium,Bold}.ttf; do
+    if [ ! -s "temp_app/assets/fonts/$font" ]; then
+        echo "❌ Erro: $font não foi copiado corretamente"
+        exit 1
+    fi
+    echo "✅ $font: $(wc -c < "temp_app/assets/fonts/$font") bytes"
+done
 
 # Entra no projeto temporário
 cd temp_app
