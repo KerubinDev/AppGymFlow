@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
+import '../providers/auth_provider.dart';
+import 'notification_settings_screen.dart';
+import 'login_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -13,97 +16,92 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          // Seção de Notificações
+          const _SectionHeader(title: 'Notificações'),
           ListTile(
-            leading: const Icon(Icons.dark_mode),
-            title: const Text('Tema'),
-            subtitle: const Text('Alterar tema do aplicativo'),
-            onTap: () => _showThemeDialog(context),
+            leading: const Icon(Icons.notifications_outlined),
+            title: const Text('Lembretes de Treino'),
+            subtitle: const Text('Configure horários e dias dos lembretes'),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NotificationSettingsScreen(),
+              ),
+            ),
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.notifications),
-            title: const Text('Notificações'),
-            subtitle: const Text('Configurar lembretes'),
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Em desenvolvimento')),
+
+          // Seção de Aparência
+          const _SectionHeader(title: 'Aparência'),
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return SwitchListTile(
+                secondary: const Icon(Icons.dark_mode),
+                title: const Text('Tema Escuro'),
+                value: themeProvider.isDarkMode,
+                onChanged: (value) => themeProvider.toggleTheme(),
               );
             },
           ),
           const Divider(),
+
+          // Seção de Conta
+          const _SectionHeader(title: 'Conta'),
           ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('Sobre'),
+            leading: const Icon(Icons.person_outline),
+            title: const Text('Editar Perfil'),
             onTap: () {
-              showAboutDialog(
-                context: context,
-                applicationName: 'GymFlow',
-                applicationVersion: '1.0.0',
-                applicationIcon: const Icon(
-                  Icons.fitness_center,
-                  size: 50,
-                  color: Colors.blue,
-                ),
-                children: const [
-                  Text('Um aplicativo para acompanhamento de treinos'),
-                ],
-              );
+              // Implementar navegação para edição de perfil
             },
+          ),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text('Sair', style: TextStyle(color: Colors.red)),
+            onTap: () async {
+              final authProvider = Provider.of<AuthProvider>(
+                context,
+                listen: false,
+              );
+              await authProvider.logout();
+              if (context.mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (route) => false,
+                );
+              }
+            },
+          ),
+
+          // Seção Sobre
+          const _SectionHeader(title: 'Sobre'),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('Versão do App'),
+            subtitle: const Text('1.0.0'),
           ),
         ],
       ),
     );
   }
+}
 
-  void _showThemeDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Escolher Tema'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              RadioListTile<ThemeMode>(
-                title: const Text('Sistema'),
-                value: ThemeMode.system,
-                groupValue: Provider.of<ThemeProvider>(context).themeMode,
-                onChanged: (value) {
-                  if (value != null) {
-                    Provider.of<ThemeProvider>(context, listen: false)
-                        .setThemeMode(value);
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-              RadioListTile<ThemeMode>(
-                title: const Text('Claro'),
-                value: ThemeMode.light,
-                groupValue: Provider.of<ThemeProvider>(context).themeMode,
-                onChanged: (value) {
-                  if (value != null) {
-                    Provider.of<ThemeProvider>(context, listen: false)
-                        .setThemeMode(value);
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-              RadioListTile<ThemeMode>(
-                title: const Text('Escuro'),
-                value: ThemeMode.dark,
-                groupValue: Provider.of<ThemeProvider>(context).themeMode,
-                onChanged: (value) {
-                  if (value != null) {
-                    Provider.of<ThemeProvider>(context, listen: false)
-                        .setThemeMode(value);
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-            ],
-          ),
-        );
-      },
+class _SectionHeader extends StatelessWidget {
+  final String title;
+
+  const _SectionHeader({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
     );
   }
 } 
