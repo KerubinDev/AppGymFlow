@@ -1,6 +1,21 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+
+class NotificationSettings {
+  final bool enabled;
+  final int? hour;
+  final int? minute;
+  final List<bool>? days;
+
+  NotificationSettings({
+    required this.enabled,
+    this.hour,
+    this.minute,
+    this.days,
+  });
+}
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._();
@@ -8,6 +23,12 @@ class NotificationService {
   NotificationService._();
 
   final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
+  
+  static const String _settingsKey = 'notification_settings';
+  static const String _enabledKey = 'notifications_enabled';
+  static const String _hourKey = 'notification_hour';
+  static const String _minuteKey = 'notification_minute';
+  static const String _daysKey = 'notification_days';
 
   Future<void> initialize() async {
     tz.initializeTimeZones();
@@ -27,6 +48,40 @@ class NotificationService {
     await _notifications.initialize(
       settings,
       onDidReceiveNotificationResponse: _onNotificationTap,
+    );
+
+    // Solicita permissões no iOS
+    await _notifications.resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
+  Future<NotificationSettings> getNotificationSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    return NotificationSettings(
+      enabled: prefs.getBool(_enabledKey) ?? false,
+      hour: prefs.getInt(_hourKey),
+      minute: prefs.getInt(_minuteKey),
+      days: prefs.getStringList(_daysKey)?.map((e) => e == 'true').toList(),
+    );
+  }
+
+  Future<void> saveNotificationSettings({
+    required bool enabled,
+    required int hour,
+    required int minute,
+    required List<bool> days,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_enabledKey, enabled);
+    await prefs.setInt(_hourKey, hour);
+    await prefs.setInt(_minuteKey, minute);
+    await prefs.setStringList(
+      _daysKey,
+      days.map((e) => e.toString()).toList(),
     );
   }
 

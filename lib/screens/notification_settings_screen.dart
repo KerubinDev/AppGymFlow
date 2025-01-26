@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../services/notification_service.dart';
+import '../widgets/custom_button.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({Key? key}) : super(key: key);
@@ -14,92 +14,147 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
   TimeOfDay _selectedTime = const TimeOfDay(hour: 18, minute: 0);
   final List<bool> _selectedDays = List.generate(7, (_) => false);
   bool _notificationsEnabled = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final settings = await _notificationService.getNotificationSettings();
+    setState(() {
+      _notificationsEnabled = settings.enabled;
+      _selectedTime = TimeOfDay(
+        hour: settings.hour ?? 18,
+        minute: settings.minute ?? 0,
+      );
+      if (settings.days != null) {
+        for (int i = 0; i < settings.days!.length; i++) {
+          _selectedDays[i] = settings.days![i];
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Configurar Notificações'),
+        title: const Text('Notificações de Treino'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          SwitchListTile(
-            title: const Text('Ativar Notificações'),
-            value: _notificationsEnabled,
-            onChanged: (value) {
-              setState(() => _notificationsEnabled = value);
-              if (!value) {
-                _notificationService.cancelAllNotifications();
-              }
-            },
-          ),
+          _buildNotificationSwitch(),
           if (_notificationsEnabled) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
+            _buildTimeSelector(),
+            const SizedBox(height: 24),
+            _buildDaySelector(),
+            const SizedBox(height: 32),
+            CustomButton(
+              text: 'Salvar Configurações',
+              onPressed: _saveSettings,
+              isLoading: _isLoading,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationSwitch() {
+    return Card(
+      child: SwitchListTile(
+        title: const Text(
+          'Ativar Notificações',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        subtitle: const Text(
+          'Receba lembretes para seus treinos',
+          style: TextStyle(fontSize: 14),
+        ),
+        value: _notificationsEnabled,
+        onChanged: (value) {
+          setState(() => _notificationsEnabled = value);
+          if (!value) {
+            _notificationService.cancelAllNotifications();
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildTimeSelector() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             const Text(
               'Horário do Lembrete',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            ListTile(
-              title: Text(
-                '${_selectedTime.hour.toString().padLeft(2, '0')}:${_selectedTime.minute.toString().padLeft(2, '0')}',
-              ),
-              trailing: const Icon(Icons.access_time),
-              onTap: _selectTime,
-            ),
             const SizedBox(height: 16),
+            InkWell(
+              onTap: _selectTime,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${_selectedTime.hour.toString().padLeft(2, '0')}:${_selectedTime.minute.toString().padLeft(2, '0')}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const Icon(Icons.access_time),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDaySelector() {
+    final days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             const Text(
               'Dias da Semana',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             Wrap(
               spacing: 8,
-              children: [
-                _DayChip(
-                  label: 'D',
-                  selected: _selectedDays[6],
-                  onSelected: (value) => _updateDay(6, value),
-                ),
-                _DayChip(
-                  label: 'S',
-                  selected: _selectedDays[0],
-                  onSelected: (value) => _updateDay(0, value),
-                ),
-                _DayChip(
-                  label: 'T',
-                  selected: _selectedDays[1],
-                  onSelected: (value) => _updateDay(1, value),
-                ),
-                _DayChip(
-                  label: 'Q',
-                  selected: _selectedDays[2],
-                  onSelected: (value) => _updateDay(2, value),
-                ),
-                _DayChip(
-                  label: 'Q',
-                  selected: _selectedDays[3],
-                  onSelected: (value) => _updateDay(3, value),
-                ),
-                _DayChip(
-                  label: 'S',
-                  selected: _selectedDays[4],
-                  onSelected: (value) => _updateDay(4, value),
-                ),
-                _DayChip(
-                  label: 'S',
-                  selected: _selectedDays[5],
-                  onSelected: (value) => _updateDay(5, value),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _scheduleNotifications,
-              child: const Text('Salvar Configurações'),
+              runSpacing: 8,
+              children: List.generate(7, (index) {
+                return FilterChip(
+                  label: Text(days[index]),
+                  selected: _selectedDays[index],
+                  onSelected: (selected) {
+                    setState(() => _selectedDays[index] = selected);
+                  },
+                  selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                );
+              }),
             ),
           ],
-        ],
+        ),
       ),
     );
   }
@@ -114,64 +169,51 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     }
   }
 
-  void _updateDay(int index, bool selected) {
-    setState(() => _selectedDays[index] = selected);
-  }
-
-  Future<void> _scheduleNotifications() async {
-    await _notificationService.cancelAllNotifications();
-
-    final selectedDayIndices = _selectedDays
-        .asMap()
-        .entries
-        .where((e) => e.value)
-        .map((e) => e.key + 1)
-        .toList();
-
-    if (selectedDayIndices.isNotEmpty) {
-      final now = DateTime.now();
-      final scheduledTime = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        _selectedTime.hour,
-        _selectedTime.minute,
+  Future<void> _saveSettings() async {
+    setState(() => _isLoading = true);
+    
+    try {
+      await _notificationService.saveNotificationSettings(
+        enabled: _notificationsEnabled,
+        hour: _selectedTime.hour,
+        minute: _selectedTime.minute,
+        days: _selectedDays,
       );
 
-      await _notificationService.scheduleWeeklyWorkoutReminder(
-        title: 'Hora do Treino! 💪',
-        body: 'Não se esqueça do seu treino de hoje!',
-        scheduledTime: scheduledTime,
-        days: selectedDayIndices,
-      );
+      if (_notificationsEnabled) {
+        final selectedDayIndices = _selectedDays
+            .asMap()
+            .entries
+            .where((e) => e.value)
+            .map((e) => e.key + 1)
+            .toList();
+
+        if (selectedDayIndices.isNotEmpty) {
+          await _notificationService.scheduleWeeklyWorkoutReminder(
+            title: 'Hora do Treino! 💪',
+            body: 'Vamos manter o foco e conquistar seus objetivos!',
+            scheduledTime: DateTime.now().copyWith(
+              hour: _selectedTime.hour,
+              minute: _selectedTime.minute,
+            ),
+            days: selectedDayIndices,
+          );
+        }
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Notificações configuradas com sucesso!')),
+          const SnackBar(content: Text('Configurações salvas com sucesso!')),
         );
       }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao salvar configurações: $e')),
+        );
+      }
+    } finally {
+      setState(() => _isLoading = false);
     }
-  }
-}
-
-class _DayChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final ValueChanged<bool> onSelected;
-
-  const _DayChip({
-    required this.label,
-    required this.selected,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return FilterChip(
-      label: Text(label),
-      selected: selected,
-      onSelected: onSelected,
-      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-    );
   }
 } 
