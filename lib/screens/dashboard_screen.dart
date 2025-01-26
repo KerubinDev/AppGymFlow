@@ -13,23 +13,16 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meus Treinos'),
+        title: const Text('GymFlow'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProfileScreen()),
-              );
-            },
-          ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
+                ),
               );
             },
           ),
