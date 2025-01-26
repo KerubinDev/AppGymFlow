@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 
 class NotificationSettings {
   final bool enabled;
@@ -33,40 +32,15 @@ class NotificationService {
   static const String _daysKey = 'notification_days';
 
   Future<void> initialize() async {
-    // Inicializa timezone
     tz.initializeTimeZones();
     
-    // Configurações para Android
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const initSettings = InitializationSettings(android: androidSettings);
 
-    // Configurações para iOS
-    const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-
-    // Configurações de inicialização
-    const initSettings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
-
-    // Inicializa o plugin
     await _notifications.initialize(
       initSettings,
       onDidReceiveNotificationResponse: _onNotificationTap,
     );
-
-    // Solicita permissões apenas para iOS
-    if (Platform.isIOS) {
-      await _notifications.resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
-    }
   }
 
   Future<NotificationSettings> getNotificationSettings() async {
@@ -122,18 +96,7 @@ class NotificationService {
       channelShowBadge: true,
     );
 
-    const iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-      sound: 'default',
-      badgeNumber: 1,
-    );
-
-    const notificationDetails = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
+    const notificationDetails = NotificationDetails(android: androidDetails);
 
     await _notifications.zonedSchedule(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -153,8 +116,6 @@ class NotificationService {
     required DateTime scheduledTime,
     required List<int> days,
   }) async {
-    print('Agendando notificações para os dias: $days'); // Debug
-
     const notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
         'workout_reminders',
@@ -167,26 +128,16 @@ class NotificationService {
         icon: '@mipmap/ic_launcher',
         largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
       ),
-      iOS: DarwinNotificationDetails(
-        presentAlert: true,
-        presentBadge: true,
-        presentSound: true,
-        sound: 'default',
-        badgeNumber: 1,
-      ),
     );
 
-    // Cancela notificações existentes antes de agendar novas
     await cancelAllNotifications();
 
     for (final day in days) {
       final scheduledDate = _nextInstanceOfDay(scheduledTime, day);
       
-      print('Agendando para: ${scheduledDate.toString()}'); // Debug
-      
       try {
         await _notifications.zonedSchedule(
-          day, // ID único para cada dia
+          day,
           title,
           body,
           scheduledDate,
@@ -196,9 +147,8 @@ class NotificationService {
               UILocalNotificationDateInterpretation.absoluteTime,
           matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
         );
-        print('Notificação agendada com sucesso para dia $day'); // Debug
       } catch (e) {
-        print('Erro ao agendar notificação: $e'); // Debug
+        print('Erro ao agendar notificação: $e');
       }
     }
   }
