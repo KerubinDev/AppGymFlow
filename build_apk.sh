@@ -2,6 +2,10 @@
 
 echo "🚀 Iniciando build do GymFlow..."
 
+# Obtém o diretório base do projeto
+BASE_DIR=$(pwd)
+echo "📂 Diretório base: $BASE_DIR"
+
 # Função para verificar e baixar fontes
 check_and_download_fonts() {
     local fonts_dir="$1"
@@ -42,7 +46,7 @@ check_and_download_fonts() {
 }
 
 # Verifica e baixa as fontes no projeto original
-if ! check_and_download_fonts "AppGymFlow/assets/fonts"; then
+if ! check_and_download_fonts "$BASE_DIR/assets/fonts"; then
     echo "❌ Erro ao configurar fontes"
     exit 1
 fi
@@ -90,10 +94,6 @@ flutter:
   uses-material-design: true
   
   assets:
-    - assets/images/logo.png
-    - assets/images/google_logo.png
-    - assets/icons/
-    - assets/data/
     - assets/data/exercises_db.json
 
   fonts:
@@ -108,19 +108,20 @@ EOL
 
 # Copia os arquivos necessários
 echo "📋 Copiando arquivos..."
-cp -r AppGymFlow/lib/* temp_app/lib/
-cp -r AppGymFlow/assets/data/exercises_db.json temp_app/assets/data/
-cp -r AppGymFlow/assets/images/* temp_app/assets/images/ 2>/dev/null || true
-cp -r AppGymFlow/assets/icons/* temp_app/assets/icons/ 2>/dev/null || true
+cp -r "$BASE_DIR/lib/"* temp_app/lib/
+cp -r "$BASE_DIR/assets/data/exercises_db.json" temp_app/assets/data/
+cp -r "$BASE_DIR/assets/images/"* temp_app/assets/images/ 2>/dev/null || true
+cp -r "$BASE_DIR/assets/icons/"* temp_app/assets/icons/ 2>/dev/null || true
 
 # Copia as fontes com verificação
 echo "📋 Copiando fontes..."
 for font in Poppins-{Regular,Medium,Bold}.ttf; do
-    if [ -f "AppGymFlow/assets/fonts/$font" ]; then
-        cp "AppGymFlow/assets/fonts/$font" "temp_app/assets/fonts/"
+    if [ -f "$BASE_DIR/assets/fonts/$font" ]; then
+        cp "$BASE_DIR/assets/fonts/$font" "temp_app/assets/fonts/"
         echo "✅ Copiado: $font"
     else
-        echo "❌ Fonte não encontrada: $font"
+        echo "❌ Fonte não encontrada: $font em $BASE_DIR/assets/fonts/"
+        ls -la "$BASE_DIR/assets/fonts/"
         exit 1
     fi
 done
