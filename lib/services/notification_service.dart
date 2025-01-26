@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 class NotificationSettings {
   final bool enabled;
@@ -36,43 +37,19 @@ class NotificationService {
     tz.initializeTimeZones();
     
     // Configurações para Android
-    const androidSettings = AndroidNotificationDetails(
-      'workout_reminders',
-      'Lembretes de Treino',
-      channelDescription: 'Notificações para lembretes de treino',
-      importance: Importance.max,
-      priority: Priority.high,
-      enableVibration: true,
-      playSound: true,
-      icon: '@mipmap/ic_launcher',
-      largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
-      enableLights: true,
-      color: Color.fromARGB(255, 33, 150, 243),
-      ledColor: Color.fromARGB(255, 33, 150, 243),
-      ledOnMs: 1000,
-      ledOffMs: 500,
-    );
+    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
 
     // Configurações para iOS
-    const iosSettings = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-      sound: 'default',
-      badgeNumber: 1,
+    const iosSettings = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
     );
 
     // Configurações de inicialização
     const initSettings = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      iOS: DarwinInitializationSettings(
-        requestAlertPermission: true,
-        requestBadgePermission: true,
-        requestSoundPermission: true,
-        defaultPresentAlert: true,
-        defaultPresentBadge: true,
-        defaultPresentSound: true,
-      ),
+      android: androidSettings,
+      iOS: iosSettings,
     );
 
     // Inicializa o plugin
@@ -81,22 +58,15 @@ class NotificationService {
       onDidReceiveNotificationResponse: _onNotificationTap,
     );
 
-    // Solicita permissões (importante para iOS e Android 13+)
-    await _requestPermissions();
-  }
-
-  Future<void> _requestPermissions() async {
-    // Permissões para iOS
-    await _notifications.resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    // Permissões para Android (API 33+)
-    await _notifications.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
+    // Solicita permissões apenas para iOS
+    if (Platform.isIOS) {
+      await _notifications.resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
   }
 
   Future<NotificationSettings> getNotificationSettings() async {
@@ -138,18 +108,29 @@ class NotificationService {
       'workout_reminders',
       'Lembretes de Treino',
       channelDescription: 'Notificações para lembretes de treino',
-      importance: Importance.high,
+      importance: Importance.max,
       priority: Priority.high,
       enableVibration: true,
+      playSound: true,
+      icon: '@mipmap/ic_launcher',
+      largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+      enableLights: true,
+      color: Color.fromARGB(255, 33, 150, 243),
+      ledColor: Color.fromARGB(255, 33, 150, 243),
+      ledOnMs: 1000,
+      ledOffMs: 500,
+      channelShowBadge: true,
     );
 
     const iosDetails = DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
       presentSound: true,
+      sound: 'default',
+      badgeNumber: 1,
     );
 
-    const details = NotificationDetails(
+    const notificationDetails = NotificationDetails(
       android: androidDetails,
       iOS: iosDetails,
     );
@@ -159,7 +140,7 @@ class NotificationService {
       title,
       body,
       tz.TZDateTime.from(scheduledDate, tz.local),
-      details,
+      notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
