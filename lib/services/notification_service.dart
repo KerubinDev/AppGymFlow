@@ -1,11 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:flutter_local_notifications/src/platform_specifics/android/enums.dart';
-import 'package:flutter_local_notifications/src/platform_specifics/android/initialization_settings.dart';
-import 'package:flutter_local_notifications/src/platform_specifics/android/notification_details.dart';
-import 'package:flutter_local_notifications/src/platform_specifics/ios/initialization_settings.dart';
-import 'package:flutter_local_notifications/src/platform_specifics/ios/notification_details.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._();
