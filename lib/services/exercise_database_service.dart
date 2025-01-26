@@ -6,7 +6,9 @@ class ExerciseDatabaseService {
   
   Future<List<Map<String, dynamic>>> getExercises() async {
     try {
+      print('Tentando carregar arquivo: $_dbPath'); // Debug
       final String jsonString = await rootBundle.loadString(_dbPath);
+      print('Conteúdo carregado: ${jsonString.substring(0, 100)}...'); // Debug
       final Map<String, dynamic> data = json.decode(jsonString);
       
       List<Map<String, dynamic>> allExercises = [];
@@ -15,7 +17,9 @@ class ExerciseDatabaseService {
       }
       
       return allExercises;
-    } catch (e) {
+    } catch (e, stackTrace) { // Adicionado stackTrace
+      print('Erro detalhado: $e'); // Debug
+      print('Stack trace: $stackTrace'); // Debug
       throw Exception('Erro ao carregar exercícios: $e');
     }
   }

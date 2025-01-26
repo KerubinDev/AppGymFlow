@@ -4,6 +4,7 @@ import '../providers/auth_provider.dart';
 import '../widgets/custom_button.dart';
 import 'register_screen.dart';
 import 'dashboard_screen.dart';
+import 'user_details_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -19,22 +20,29 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   bool _obscurePassword = true;
 
-  Future<void> _handleLogin() async {
-    if (_formKey.currentState!.validate()) {
+  Future<void> _login() async {
+    if (_formKey.currentState?.validate() ?? false) {
       setState(() => _isLoading = true);
+      
       try {
-        final success = await Provider.of<AuthProvider>(context, listen: false)
-            .login(_emailController.text, _passwordController.text);
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        final isNewUser = await authProvider.login(
+          _emailController.text,
+          _passwordController.text,
+        );
 
         if (mounted) {
-          if (success) {
+          if (isNewUser) {
+            // Se for um novo usuário, vai para a tela de detalhes
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const UserDetailsScreen()),
+            );
+          } else {
+            // Se já tiver os dados, vai direto para o dashboard
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const DashboardScreen()),
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Email ou senha inválidos')),
             );
           }
         }
@@ -45,9 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       } finally {
-        if (mounted) {
-          setState(() => _isLoading = false);
-        }
+        setState(() => _isLoading = false);
       }
     }
   }
@@ -129,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 else ...[
                   CustomButton(
                     text: 'Entrar',
-                    onPressed: _handleLogin,
+                    onPressed: _login,
                   ),
                   const SizedBox(height: 16),
                   TextButton(
