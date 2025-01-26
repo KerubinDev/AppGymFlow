@@ -33,7 +33,35 @@ class NotificationService {
 
   Future<void> initialize() async {
     tz.initializeTimeZones();
-    
+
+    // Canal de notificação para testes imediatos
+    const AndroidNotificationChannel testChannel = AndroidNotificationChannel(
+      'test_channel',
+      'Testes de Notificação',
+      description: 'Canal para testes de notificação',
+      importance: Importance.max,
+      enableVibration: true,
+      enableLights: true,
+      playSound: true,
+    );
+
+    // Canal de notificação para lembretes de treino
+    const AndroidNotificationChannel workoutChannel = AndroidNotificationChannel(
+      'workout_reminders',
+      'Lembretes de Treino',
+      description: 'Notificações para lembretes de treino',
+      importance: Importance.max,
+      enableVibration: true,
+      enableLights: true,
+      playSound: true,
+    );
+
+    // Cria os canais de notificação
+    await _notifications
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannels([testChannel, workoutChannel]);
+
+    // Configurações de inicialização
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
     const initSettings = InitializationSettings(android: androidSettings);
 
@@ -73,6 +101,37 @@ class NotificationService {
     // Implementar navegação quando a notificação for tocada
   }
 
+  Future<void> showTestNotification() async {
+    const androidDetails = AndroidNotificationDetails(
+      'test_channel',
+      'Testes de Notificação',
+      channelDescription: 'Canal para testes de notificação',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+      enableVibration: true,
+      playSound: true,
+      icon: '@mipmap/ic_launcher',
+      largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+      enableLights: true,
+      color: Color.fromARGB(255, 33, 150, 243),
+      ledColor: Color.fromARGB(255, 33, 150, 243),
+      ledOnMs: 1000,
+      ledOffMs: 500,
+      channelShowBadge: true,
+      fullScreenIntent: true,
+    );
+
+    const notificationDetails = NotificationDetails(android: androidDetails);
+
+    await _notifications.show(
+      0,
+      'Teste de Notificação',
+      'Se você está vendo isso, as notificações estão funcionando! 🎉',
+      notificationDetails,
+    );
+  }
+
   Future<void> showWorkoutReminder({
     required String title,
     required String body,
@@ -84,6 +143,7 @@ class NotificationService {
       channelDescription: 'Notificações para lembretes de treino',
       importance: Importance.max,
       priority: Priority.high,
+      ticker: 'ticker',
       enableVibration: true,
       playSound: true,
       icon: '@mipmap/ic_launcher',
@@ -94,20 +154,33 @@ class NotificationService {
       ledOnMs: 1000,
       ledOffMs: 500,
       channelShowBadge: true,
+      fullScreenIntent: true,
     );
 
     const notificationDetails = NotificationDetails(android: androidDetails);
 
-    await _notifications.zonedSchedule(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      title,
-      body,
-      tz.TZDateTime.from(scheduledDate, tz.local),
-      notificationDetails,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
+    final scheduledTime = tz.TZDateTime.from(scheduledDate, tz.local);
+    
+    if (scheduledTime.isBefore(tz.TZDateTime.now(tz.local))) {
+      print('Data agendada está no passado, ajustando...');
+      return;
+    }
+
+    try {
+      await _notifications.zonedSchedule(
+        DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        title,
+        body,
+        scheduledTime,
+        notificationDetails,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+      );
+      print('Notificação agendada com sucesso para: ${scheduledTime.toString()}');
+    } catch (e) {
+      print('Erro ao agendar notificação: $e');
+    }
   }
 
   Future<void> scheduleWeeklyWorkoutReminder({

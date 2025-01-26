@@ -63,17 +63,13 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
               text: 'Testar Notificação',
               onPressed: () async {
                 try {
-                  final now = DateTime.now().add(const Duration(seconds: 5));
-                  await _notificationService.showWorkoutReminder(
-                    title: 'Teste de Notificação',
-                    body: 'Se você está vendo isso, as notificações estão funcionando! 🎉',
-                    scheduledDate: now,
-                  );
+                  // Testa notificação imediata
+                  await _notificationService.showTestNotification();
                   
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Notificação agendada para 5 segundos'),
+                        content: Text('Notificação de teste enviada!'),
                       ),
                     );
                   }
