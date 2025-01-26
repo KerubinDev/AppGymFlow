@@ -119,10 +119,8 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
   }
 
   Future<void> _scheduleNotifications() async {
-    // Cancela todas as notificações existentes
     await _notificationService.cancelAllNotifications();
 
-    // Agenda novas notificações apenas para os dias selecionados
     final selectedDayIndices = _selectedDays
         .asMap()
         .entries
@@ -131,10 +129,19 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
         .toList();
 
     if (selectedDayIndices.isNotEmpty) {
+      final now = DateTime.now();
+      final scheduledTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        _selectedTime.hour,
+        _selectedTime.minute,
+      );
+
       await _notificationService.scheduleWeeklyWorkoutReminder(
         title: 'Hora do Treino! 💪',
         body: 'Não se esqueça do seu treino de hoje!',
-        time: Time(_selectedTime.hour, _selectedTime.minute),
+        scheduledTime: scheduledTime,
         days: selectedDayIndices,
       );
 

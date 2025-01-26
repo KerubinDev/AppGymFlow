@@ -1,6 +1,11 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_local_notifications/src/platform_specifics/android/enums.dart';
+import 'package:flutter_local_notifications/src/platform_specifics/android/initialization_settings.dart';
+import 'package:flutter_local_notifications/src/platform_specifics/android/notification_details.dart';
+import 'package:flutter_local_notifications/src/platform_specifics/ios/initialization_settings.dart';
+import 'package:flutter_local_notifications/src/platform_specifics/ios/notification_details.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._();
@@ -74,7 +79,7 @@ class NotificationService {
   Future<void> scheduleWeeklyWorkoutReminder({
     required String title,
     required String body,
-    required Time time,
+    required DateTime scheduledTime,
     required List<int> days, // 1 = Monday, 7 = Sunday
   }) async {
     const androidDetails = AndroidNotificationDetails(
@@ -92,11 +97,13 @@ class NotificationService {
     );
 
     for (final day in days) {
+      final scheduledDate = _nextInstanceOfDay(scheduledTime, day);
+      
       await _notifications.zonedSchedule(
         day, // ID único para cada dia
         title,
         body,
-        _nextInstanceOfDay(time, day),
+        scheduledDate,
         details,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
@@ -106,7 +113,7 @@ class NotificationService {
     }
   }
 
-  tz.TZDateTime _nextInstanceOfDay(Time time, int day) {
+  tz.TZDateTime _nextInstanceOfDay(DateTime time, int day) {
     final now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate = tz.TZDateTime(
       tz.local,

@@ -1,89 +1,185 @@
-# AppGymFlow
+<div align="center">
 
-Um aplicativo para acompanhamento de treinos e progresso físico.
+```
+      ___           ___           ___           ___       ___       ___     
+     /\__\         /\  \         /\__\         /\__\     /\__\     /\  \    
+    /::|  |       /::\  \       /:/  /        /:/  /    /:/  /    /::\  \   
+   /:|:|  |      /:/\:\  \     /:/  /        /:/  /    /:/  /    /:/\:\  \  
+  /:/|:|  |__   /::\~\:\  \   /:/  /  ___   /:/  /    /:/  /    /:/  \:\  \ 
+ /:/ |:| /\__\ /:/\:\ \:\__\ /:/__/  /\__\ /:/__/    /:/__/    /:/__/ \:\__\
+ \/__|:|/:/  / \:\~\:\ \/__/ \:\  \ /:/  / \:\  \    \:\  \    \:\  \ /:/  /
+     |:/:/  /   \:\ \:\__\    \:\  /:/  /   \:\  \    \:\  \    \:\  /:/  / 
+     |::/  /     \:\ \/__/     \:\/:/  /     \:\  \    \:\  \    \:\/:/  /  
+     /:/  /       \:\__\        \::/  /       \:\__\    \:\__\    \::/  /   
+     \/__/         \/__/         \/__/         \/__/     \/__/     \/__/    
 
-## Funcionalidades
+```
 
-- Registro de treinos
-- Acompanhamento de progresso
-- Histórico de exercícios
-- Tema claro/escuro
+<h3>🏋️ Aplicativo de Acompanhamento de Treinos</h3>
 
-## Como executar
+[![Flutter](https://img.shields.io/badge/Flutter-3.16+-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev/)
+[![Dart](https://img.shields.io/badge/Dart-2.19+-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/)
+[![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://www.android.com/)
+[![License](https://img.shields.io/badge/License-GPL%20v3-blue?style=for-the-badge&logo=gnu&logoColor=white)](LICENSE)
 
-### Pré-requisitos
+[📱 Sobre](#-sobre) • 
+[✨ Funcionalidades](#-funcionalidades) • 
+[🛠️ Instalação](#️-instalação) • 
+[💻 Desenvolvimento](#-desenvolvimento)
 
-- Flutter SDK
+</div>
+
+## 📱 Sobre
+
+<div align="center">
+
+```mermaid
+graph TD
+    A[AppGymFlow] --> B[Registro de Treinos]
+    A --> C[Acompanhamento]
+    A --> D[Progresso Físico]
+    A --> E[Análise de Dados]
+    
+    B --> B1[Exercícios]
+    B --> B2[Séries/Repetições]
+    
+    C --> C1[Gráficos]
+    C --> C2[Métricas]
+    
+    D --> D1[Peso]
+    D --> D2[Medidas]
+    
+    E --> E1[Histórico]
+    E --> E2[Comparativos]
+
+    style A fill:#ff9900,stroke:#fff
+    style B fill:#4B8BBE,stroke:#fff
+    style C fill:#4B8BBE,stroke:#fff
+    style D fill:#4B8BBE,stroke:#fff
+    style E fill:#4B8BBE,stroke:#fff
+```
+
+AppGymFlow: Seu personal trainer digital, transformando dados em resultados.
+
+</div>
+
+## ✨ Funcionalidades
+
+<table align="center">
+  <tr>
+    <td align="center" width="25%">
+      <img width="64" src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Workout.svg" alt="Registro de Treinos"/>
+      <br/><strong>📋 Registro</strong>
+      <br/><sub>• Cadastro de exercícios<br/>• Personalização de treinos<br/>• Histórico detalhado</sub>
+    </td>
+    <td align="center" width="25%">
+      <img width="64" src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Graph.svg" alt="Acompanhamento"/>
+      <br/><strong>📊 Progresso</strong>
+      <br/><sub>• Gráficos interativos<br/>• Análise de evolução<br/>• Comparativos</sub>
+    </td>
+    <td align="center" width="25%">
+      <img width="64" src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/PersonalTrainer.svg" alt="Análise Física"/>
+      <br/><strong>💪 Métricas</strong>
+      <br/><sub>• Registro de peso<br/>• Medidas corporais<br/>• Evolução física</sub>
+    </td>
+    <td align="center" width="25%">
+      <img width="64" src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Theme.svg" alt="Interface"/>
+      <br/><strong>🌓 Interface</strong>
+      <br/><sub>• Tema claro/escuro<br/>• Design responsivo<br/>• Acessibilidade</sub>
+    </td>
+  </tr>
+</table>
+
+## 🛠️ Instalação
+
+<details>
+<summary>📦 Pré-requisitos</summary>
+
+- Flutter SDK 3.16+
+- Android Studio / VS Code
 - Git
-- Android Studio ou VS Code
 - Dispositivo Android ou Emulador
+</details>
 
-### Passos para executar
+<details>
+<summary>⚡ Passos de Instalação</summary>
 
-1. Clone o repositório:
 ```bash
+# Clone o repositório
 git clone https://github.com/seu-usuario/AppGymFlow.git
 cd AppGymFlow
-```
 
-2. Torne o script de build executável:
-```bash
+# Torne o script executável
 chmod +x build_apk.sh
-```
 
-3. Execute o script para gerar o APK:
-```bash
+# Gere o APK
 ./build_apk.sh
+
+# Localize o APK em:
+# AppGymFlow/build/app/outputs/flutter-apk/app-debug.apk
+```
+</details>
+
+## 🛠️ Stack Tecnológica
+
+<div align="center">
+
+| Mobile | State | Storage | Graphics |
+|--------|-------|---------|----------|
+| ![Flutter](https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Flutter.svg) | ![Provider](https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Flutter-Dark.svg) | ![SharedPrefs](https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Firebase-Dark.svg) | ![Charts](https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Chart.svg) |
+| Dart 2.19+ | Provider | Local Storage | FL Chart |
+
+</div>
+
+## 📂 Estrutura do Projeto
+
+```plaintext
+🏋️ AppGymFlow/
+├── 📊 lib/
+│   ├── 🏆 models/
+│   ├── 📡 providers/
+│   ├── 📱 screens/
+│   └── 🧩 widgets/
+├── 🖼️ assets/
+└── 📦 android/
 ```
 
-4. Para baixar o APK:
-   - No VS Code, abra o explorador de arquivos
-   - Navegue até `AppGymFlow/build/app/outputs/flutter-apk/`
-   - Clique com o botão direito em `app-debug.apk`
-   - Selecione 'Download'
+## 🔄 Fluxo de Desenvolvimento
 
-5. Instale o APK no seu dispositivo Android
-
-### Desenvolvimento
-
-Para desenvolver o app localmente:
-
-1. Instale as dependências:
-```bash
-flutter pub get
+```mermaid
+gitGraph
+   commit
+   branch feature
+   checkout feature
+   commit
+   commit
+   checkout main
+   merge feature
+   commit
 ```
 
-2. Execute em modo de desenvolvimento:
-```bash
-flutter run
-```
+## 👨‍💻 Autor
 
-## Estrutura do Projeto
+<div align="center">
+  <img width="200" height="200" src="https://raw.githubusercontent.com/tandpfun/skill-icons/main/icons/Github-Dark.svg">
+  <h3>Kelvin Moraes</h3>
+  <p>Mobile Developer | Fitness Tech Enthusiast</p>
+  
+[![GitHub](https://img.shields.io/badge/GitHub-KerubinDev-181717?style=for-the-badge&logo=github)](https://github.com/KerubinDev)
+[![Email](https://img.shields.io/badge/Email-kelvin.moraes117@gmail.com-EA4335?style=for-the-badge&logo=gmail)](mailto:kelvin.moraes117@gmail.com)
+</div>
 
-```
-lib/
-├── models/         # Classes de dados
-├── providers/      # Gerenciamento de estado
-├── screens/        # Telas do app
-├── widgets/        # Componentes reutilizáveis
-└── main.dart       # Ponto de entrada
-```
+## 📝 Licença
 
-## Tecnologias
+Projeto sob licença GNU GPL v3. Consulte [LICENSE](LICENSE) para detalhes.
 
-- Flutter
-- Provider (Gerenciamento de Estado)
-- Shared Preferences (Armazenamento Local)
-- FL Chart (Gráficos)
+---
 
-## Contribuindo
-
-1. Faça um Fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## Licença
-
-Este projeto está sob a licença GNU GPL 3. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+<div align="center">
+  
+  **[⬆ Voltar ao topo](#appgymflow)**
+  
+  <sub>Desenvolvido com 💪 por Kelvin Moraes</sub>
+  
+[![Stack](https://img.shields.io/badge/Stack-Flutter%20%7C%20Dart-02569B?style=for-the-badge)](https://github.com/KerubinDev/AppGymFlow)
+</div>
