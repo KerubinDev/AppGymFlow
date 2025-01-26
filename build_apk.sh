@@ -12,7 +12,7 @@ flutter create -t app temp_app
 echo "📂 Criando estrutura de diretórios..."
 mkdir -p temp_app/assets/{icons,fonts,images}
 
-# Cria um pubspec.yaml simplificado
+# Cria um pubspec.yaml com todas as dependências necessárias
 echo "📝 Configurando pubspec.yaml..."
 cat > temp_app/pubspec.yaml << 'EOL'
 name: app_gym_flow
@@ -26,16 +26,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
-  provider: ^6.0.5
-  shared_preferences: ^2.1.1
+  cupertino_icons: ^1.0.6
+  dio: ^5.4.1
+  equatable: ^2.0.7
+  fl_chart: ^0.55.2
+  provider: ^6.1.2
+  shared_preferences: ^2.2.2
   intl: ^0.17.0
-  fl_chart: ^0.55.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.3
 
 flutter:
   uses-material-design: true
