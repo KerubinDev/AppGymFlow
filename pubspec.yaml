@@ -31,6 +31,7 @@ flutter:
     - assets/images/logo.png
     - assets/images/google_logo.png
     - assets/icons/
+    - assets/data/exercises_db.json
 
   fonts:
     - family: Poppins

@@ -1,0 +1,676 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "Musculação",
+      "icon": "weight_lifting"
+    },
+    {
+      "id": 2,
+      "name": "CrossFit",
+      "icon": "fitness_center"
+    },
+    {
+      "id": 3,
+      "name": "Calistenia",
+      "icon": "sports_gymnastics"
+    },
+    {
+      "id": 4,
+      "name": "Cardio",
+      "icon": "directions_run"
+    },
+    {
+      "id": 5,
+      "name": "Yoga",
+      "icon": "self_improvement"
+    },
+    {
+      "id": 6,
+      "name": "Alongamento",
+      "icon": "accessibility_new"
+    }
+  ],
+  "muscleGroups": [
+    {
+      "id": 1,
+      "name": "Peitoral",
+      "exercises": [
+        {
+          "id": "chest_1",
+          "name": "Supino Reto com Barra",
+          "category": 1,
+          "description": "Exercício clássico para desenvolvimento do peitoral",
+          "instructions": [
+            "Deite-se no banco com os pés apoiados no chão",
+            "Segure a barra com as mãos um pouco mais abertas que a largura dos ombros",
+            "Desça a barra controladamente até tocar levemente o peito",
+            "Empurre a barra para cima até estender os braços"
+          ],
+          "tips": "Mantenha os cotovelos em ângulo de 45° durante o movimento",
+          "difficulty": "Intermediário",
+          "equipment": ["Barra", "Banco reto"],
+          "variations": ["Com halteres", "Com peso corporal (flexão)"],
+          "muscles": {
+            "primary": ["Peitoral maior"],
+            "secondary": ["Deltóide anterior", "Tríceps"]
+          }
+        },
+        {
+          "id": "chest_2",
+          "name": "Crucifixo com Halteres",
+          "category": 1,
+          "description": "Exercício de isolamento para desenvolvimento e definição do peitoral",
+          "instructions": [
+            "Deite-se no banco com os pés apoiados no chão",
+            "Segure os halteres com os braços estendidos acima do peito",
+            "Abra os braços lateralmente, mantendo uma leve flexão nos cotovelos",
+            "Retorne à posição inicial aproximando os halteres"
+          ],
+          "tips": "Mantenha uma leve flexão nos cotovelos durante todo o movimento",
+          "difficulty": "Intermediário",
+          "equipment": ["Halteres", "Banco reto"],
+          "variations": ["Na polia", "Declinado"],
+          "muscles": {
+            "primary": ["Peitoral maior"],
+            "secondary": ["Deltóide anterior"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Costas",
+      "exercises": [
+        {
+          "id": "back_1",
+          "name": "Puxada na Frente",
+          "category": 1,
+          "description": "Exercício para desenvolvimento da largura das costas",
+          "instructions": [
+            "Sente-se na máquina com os joelhos fixos sob as almofadas",
+            "Segure a barra com as mãos um pouco mais abertas que os ombros",
+            "Puxe a barra até a altura do queixo",
+            "Retorne controladamente à posição inicial"
+          ],
+          "tips": "Mantenha o peito elevado e evite inclinar muito o corpo para trás",
+          "difficulty": "Intermediário",
+          "equipment": ["Máquina de puxada"],
+          "variations": ["Puxada fechada", "Puxada com triângulo"],
+          "muscles": {
+            "primary": ["Latíssimo do dorso"],
+            "secondary": ["Bíceps", "Redondo maior"]
+          }
+        },
+        {
+          "id": "back_2",
+          "name": "Remada Curvada com Barra",
+          "category": 1,
+          "description": "Exercício composto para desenvolvimento da espessura das costas",
+          "instructions": [
+            "Em pé, flexione o tronco até ficar quase paralelo ao chão",
+            "Segure a barra com as mãos um pouco mais abertas que os ombros",
+            "Puxe a barra em direção ao abdômen",
+            "Retorne controladamente à posição inicial"
+          ],
+          "tips": "Mantenha as costas retas e o core contraído durante todo o movimento",
+          "difficulty": "Intermediário",
+          "equipment": ["Barra"],
+          "variations": ["Com halteres", "Na máquina"],
+          "muscles": {
+            "primary": ["Latíssimo do dorso", "Trapézio"],
+            "secondary": ["Bíceps", "Romboides"]
+          }
+        },
+        {
+          "id": "back_3",
+          "name": "Pull-up (Barra Fixa)",
+          "category": 3,
+          "description": "Exercício corporal para desenvolvimento das costas e braços",
+          "instructions": [
+            "Segure a barra fixa com as palmas das mãos voltadas para frente",
+            "Partindo da posição pendurada, puxe o corpo para cima",
+            "Continue até que o queixo ultrapasse a barra",
+            "Desça controladamente até os braços ficarem estendidos"
+          ],
+          "tips": "Inicie com pull-ups assistidas se necessário",
+          "difficulty": "Avançado",
+          "equipment": ["Barra fixa"],
+          "variations": ["Pegada fechada", "Pegada neutra"],
+          "muscles": {
+            "primary": ["Latíssimo do dorso"],
+            "secondary": ["Bíceps", "Trapézio"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Pernas",
+      "exercises": [
+        {
+          "id": "legs_1",
+          "name": "Agachamento Livre",
+          "category": 1,
+          "description": "Exercício fundamental para desenvolvimento das pernas",
+          "instructions": [
+            "Posicione a barra nos ombros/trapézio",
+            "Pés na largura dos ombros, pontas levemente para fora",
+            "Flexione os joelhos e quadril, descendo como se fosse sentar",
+            "Desça até as coxas ficarem paralelas ao solo",
+            "Retorne à posição inicial empurrando através dos calcanhares"
+          ],
+          "tips": "Mantenha o peito erguido e os joelhos alinhados com os pés",
+          "difficulty": "Intermediário",
+          "equipment": ["Barra", "Suporte para agachamento"],
+          "variations": ["Front squat", "Agachamento sumô"],
+          "muscles": {
+            "primary": ["Quadríceps", "Glúteos"],
+            "secondary": ["Isquiotibiais", "Core"]
+          }
+        },
+        {
+          "id": "legs_2",
+          "name": "Leg Press 45°",
+          "category": 1,
+          "description": "Exercício em máquina para desenvolvimento das pernas",
+          "instructions": [
+            "Sente-se na máquina com as costas bem apoiadas",
+            "Posicione os pés na plataforma na largura dos ombros",
+            "Destrave a máquina e baixe o peso controladamente",
+            "Empurre o peso de volta até quase estender os joelhos"
+          ],
+          "tips": "Evite travar os joelhos no topo do movimento",
+          "difficulty": "Iniciante",
+          "equipment": ["Máquina Leg Press"],
+          "variations": ["Pés mais altos", "Pés mais abertos"],
+          "muscles": {
+            "primary": ["Quadríceps"],
+            "secondary": ["Glúteos", "Isquiotibiais"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Ombros",
+      "exercises": [
+        {
+          "id": "shoulders_1",
+          "name": "Desenvolvimento com Barra",
+          "category": 1,
+          "description": "Exercício composto para desenvolvimento dos ombros",
+          "instructions": [
+            "Em pé ou sentado, segure a barra na altura dos ombros",
+            "Palmas das mãos voltadas para frente",
+            "Empurre a barra para cima até estender os braços",
+            "Retorne controladamente à posição inicial"
+          ],
+          "tips": "Evite arquear as costas durante o movimento",
+          "difficulty": "Intermediário",
+          "equipment": ["Barra"],
+          "variations": ["Com halteres", "Arnold Press"],
+          "muscles": {
+            "primary": ["Deltóide"],
+            "secondary": ["Trapézio", "Tríceps"]
+          }
+        },
+        {
+          "id": "shoulders_2",
+          "name": "Elevação Lateral",
+          "category": 1,
+          "description": "Exercício de isolamento para desenvolvimento da parte lateral dos ombros",
+          "instructions": [
+            "Em pé, segure um halter em cada mão ao lado do corpo",
+            "Mantenha uma leve flexão nos cotovelos",
+            "Eleve os braços lateralmente até a altura dos ombros",
+            "Retorne controladamente à posição inicial"
+          ],
+          "tips": "Evite usar impulso do corpo durante o movimento",
+          "difficulty": "Iniciante",
+          "equipment": ["Halteres"],
+          "variations": ["Na polia", "Com prato"],
+          "muscles": {
+            "primary": ["Deltóide lateral"],
+            "secondary": ["Trapézio"]
+          }
+        },
+        {
+          "id": "shoulders_3",
+          "name": "Elevação Frontal",
+          "category": 1,
+          "description": "Exercício para desenvolvimento da parte frontal dos ombros",
+          "instructions": [
+            "Em pé, segure os halteres à frente do corpo",
+            "Eleve os braços à frente até a altura dos ombros",
+            "Mantenha os braços estendidos durante o movimento",
+            "Retorne controladamente à posição inicial"
+          ],
+          "tips": "Alterne os braços para melhor controle do movimento",
+          "difficulty": "Iniciante",
+          "equipment": ["Halteres"],
+          "variations": ["Com barra", "Com prato"],
+          "muscles": {
+            "primary": ["Deltóide anterior"],
+            "secondary": ["Trapézio superior"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Braços",
+      "exercises": [
+        {
+          "id": "arms_1",
+          "name": "Rosca Direta com Barra",
+          "category": 1,
+          "description": "Exercício clássico para desenvolvimento dos bíceps",
+          "instructions": [
+            "Em pé, segure a barra com as palmas voltadas para cima",
+            "Mantenha os cotovelos junto ao corpo",
+            "Flexione os cotovelos, elevando a barra até os ombros",
+            "Retorne controladamente à posição inicial"
+          ],
+          "tips": "Evite usar impulso do corpo durante o movimento",
+          "difficulty": "Iniciante",
+          "equipment": ["Barra"],
+          "variations": ["Com halteres", "Na polia"],
+          "muscles": {
+            "primary": ["Bíceps braquial"],
+            "secondary": ["Braquial", "Braquiorradial"]
+          }
+        },
+        {
+          "id": "arms_2",
+          "name": "Extensão de Tríceps na Polia",
+          "category": 1,
+          "description": "Exercício para desenvolvimento do tríceps",
+          "instructions": [
+            "Em pé de frente para a polia alta",
+            "Segure a corda com as palmas voltadas uma para outra",
+            "Estenda os cotovelos, empurrando a corda para baixo",
+            "Retorne controladamente à posição inicial"
+          ],
+          "tips": "Mantenha os cotovelos próximos à cabeça",
+          "difficulty": "Iniciante",
+          "equipment": ["Polia", "Corda"],
+          "variations": ["Com barra", "Unilateral"],
+          "muscles": {
+            "primary": ["Tríceps"],
+            "secondary": ["Ancôneo"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Abdômen",
+      "exercises": [
+        {
+          "id": "abs_1",
+          "name": "Prancha",
+          "category": 1,
+          "description": "Exercício isométrico para fortalecimento do core",
+          "instructions": [
+            "Apoie os antebraços e as pontas dos pés no chão",
+            "Mantenha o corpo em linha reta",
+            "Contraia o abdômen e os glúteos",
+            "Mantenha a posição pelo tempo determinado"
+          ],
+          "tips": "Respire normalmente e evite arquear as costas",
+          "difficulty": "Iniciante",
+          "equipment": ["Nenhum"],
+          "variations": ["Prancha lateral", "Com elevação de perna"],
+          "muscles": {
+            "primary": ["Reto abdominal", "Transverso do abdômen"],
+            "secondary": ["Oblíquos", "Estabilizadores da coluna"]
+          }
+        },
+        {
+          "id": "abs_2",
+          "name": "Crunch",
+          "category": 1,
+          "description": "Exercício básico para fortalecimento abdominal",
+          "instructions": [
+            "Deite-se de costas com os joelhos flexionados",
+            "Coloque as mãos atrás da cabeça",
+            "Eleve os ombros do chão, contraindo o abdômen",
+            "Retorne controladamente à posição inicial"
+          ],
+          "tips": "Evite puxar o pescoço com as mãos",
+          "difficulty": "Iniciante",
+          "equipment": ["Nenhum"],
+          "variations": ["Na bola suíça", "Com rotação"],
+          "muscles": {
+            "primary": ["Reto abdominal"],
+            "secondary": ["Oblíquos"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "CrossFit",
+      "exercises": [
+        {
+          "id": "crossfit_1",
+          "name": "Burpee",
+          "category": 2,
+          "description": "Exercício completo que trabalha todo o corpo",
+          "instructions": [
+            "Partindo em pé, agache e apoie as mãos no chão",
+            "Jogue os pés para trás, ficando em posição de flexão",
+            "Faça uma flexão de braço",
+            "Salte com os pés voltando à posição agachada",
+            "Salte verticalmente com os braços estendidos acima da cabeça"
+          ],
+          "tips": "Mantenha o ritmo constante e respire de forma controlada",
+          "difficulty": "Intermediário",
+          "equipment": ["Nenhum"],
+          "variations": ["Sem flexão", "Com placa"],
+          "muscles": {
+            "primary": ["Todo o corpo"],
+            "secondary": ["Sistema cardiovascular"]
+          }
+        },
+        {
+          "id": "crossfit_2",
+          "name": "Thrusters",
+          "category": 2,
+          "description": "Combinação de agachamento frontal com desenvolvimento de ombros",
+          "instructions": [
+            "Segure a barra na posição frontal nos ombros",
+            "Realize um agachamento completo",
+            "Ao subir, impulsione a barra acima da cabeça",
+            "Retorne a barra aos ombros controladamente"
+          ],
+          "tips": "Mantenha o core estável e os cotovelos altos",
+          "difficulty": "Avançado",
+          "equipment": ["Barra", "Anilhas"],
+          "variations": ["Com halteres", "Com kettlebell"],
+          "muscles": {
+            "primary": ["Quadríceps", "Ombros"],
+            "secondary": ["Glúteos", "Core"]
+          }
+        },
+        {
+          "id": "crossfit_3",
+          "name": "Wall Ball",
+          "category": 2,
+          "description": "Arremesso de medicine ball na parede combinando agachamento",
+          "instructions": [
+            "Segure a medicine ball próximo ao peito",
+            "Realize um agachamento completo",
+            "Ao subir, arremesse a bola em um alvo na parede",
+            "Pegue a bola e repita o movimento"
+          ],
+          "tips": "Mantenha os olhos no alvo durante o arremesso",
+          "difficulty": "Intermediário",
+          "equipment": ["Medicine ball", "Parede"],
+          "variations": ["Diferentes pesos", "Diferentes alturas"],
+          "muscles": {
+            "primary": ["Quadríceps", "Ombros"],
+            "secondary": ["Core", "Glúteos"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Calistenia",
+      "exercises": [
+        {
+          "id": "calisthenics_1",
+          "name": "Muscle Up",
+          "category": 3,
+          "description": "Exercício avançado que combina pull-up com dip",
+          "instructions": [
+            "Inicie pendurado na barra com pegada pronada",
+            "Realize um pull-up explosivo",
+            "Durante o ponto alto, gire os punhos sobre a barra",
+            "Empurre o corpo para cima completando o movimento",
+            "Desça controladamente voltando à posição inicial"
+          ],
+          "tips": "Comece praticando as progressões antes de tentar o movimento completo",
+          "difficulty": "Avançado",
+          "equipment": ["Barra fixa"],
+          "variations": ["Na argola", "Com kip"],
+          "muscles": {
+            "primary": ["Latíssimo", "Peitoral", "Tríceps"],
+            "secondary": ["Ombros", "Core"]
+          }
+        },
+        {
+          "id": "calisthenics_2",
+          "name": "Handstand Push-up",
+          "category": 3,
+          "description": "Flexão de braço em parada de mãos",
+          "instructions": [
+            "Faça uma parada de mãos contra a parede",
+            "Mantenha o corpo alinhado e reto",
+            "Flexione os braços descendo a cabeça em direção ao solo",
+            "Empurre de volta à posição inicial"
+          ],
+          "tips": "Comece com progressões na parede antes do movimento completo",
+          "difficulty": "Avançado",
+          "equipment": ["Parede"],
+          "variations": ["Com déficit", "Negativas"],
+          "muscles": {
+            "primary": ["Ombros", "Tríceps"],
+            "secondary": ["Core", "Peitoral"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Cardio",
+      "exercises": [
+        {
+          "id": "cardio_1",
+          "name": "HIIT na Esteira",
+          "category": 4,
+          "description": "Treino intervalado de alta intensidade na esteira",
+          "instructions": [
+            "Aquecimento de 5 minutos em ritmo leve",
+            "30 segundos de sprint máximo",
+            "30 segundos de caminhada para recuperação",
+            "Repita os intervalos por 15-20 minutos",
+            "Finalize com 5 minutos de desaceleração"
+          ],
+          "tips": "Ajuste as velocidades de acordo com seu condicionamento",
+          "difficulty": "Intermediário",
+          "equipment": ["Esteira"],
+          "variations": ["Inclinada", "Velocidades diferentes"],
+          "muscles": {
+            "primary": ["Sistema cardiovascular"],
+            "secondary": ["Membros inferiores"]
+          }
+        },
+        {
+          "id": "cardio_2",
+          "name": "Jump Rope",
+          "category": 4,
+          "description": "Pular corda para condicionamento cardiovascular",
+          "instructions": [
+            "Segure as extremidades da corda",
+            "Mantenha os cotovelos próximos ao corpo",
+            "Gire a corda usando os punhos",
+            "Salte com os dois pés juntos ou alternados"
+          ],
+          "tips": "Mantenha um ritmo constante e olhe para frente",
+          "difficulty": "Iniciante",
+          "equipment": ["Corda de pular"],
+          "variations": ["Double unders", "Alternado", "Cruzado"],
+          "muscles": {
+            "primary": ["Sistema cardiovascular"],
+            "secondary": ["Panturrilhas", "Ombros"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "WODs CrossFit",
+      "exercises": [
+        {
+          "id": "wod_1",
+          "name": "Fran",
+          "category": 2,
+          "description": "WOD clássico do CrossFit combinando thrusters e pull-ups",
+          "instructions": [
+            "21-15-9 repetições de:",
+            "Thrusters (43kg/30kg)",
+            "Pull-ups"
+          ],
+          "tips": "Mantenha um ritmo sustentável e divida as séries se necessário",
+          "difficulty": "Avançado",
+          "equipment": ["Barra", "Anilhas", "Barra fixa"],
+          "variations": ["Scaled com peso menor", "Pull-ups assistidos"],
+          "muscles": {
+            "primary": ["Todo o corpo"],
+            "secondary": ["Sistema cardiovascular"]
+          }
+        },
+        {
+          "id": "wod_2",
+          "name": "Cindy",
+          "category": 2,
+          "description": "WOD de 20 minutos com movimentos básicos",
+          "instructions": [
+            "AMRAP em 20 minutos de:",
+            "5 Pull-ups",
+            "10 Push-ups",
+            "15 Air squats"
+          ],
+          "tips": "Mantenha um ritmo constante que possa ser mantido por 20 minutos",
+          "difficulty": "Intermediário",
+          "equipment": ["Barra fixa"],
+          "variations": ["Pull-ups assistidos", "Push-ups nos joelhos"],
+          "muscles": {
+            "primary": ["Todo o corpo"],
+            "secondary": ["Sistema cardiovascular"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Yoga",
+      "exercises": [
+        {
+          "id": "yoga_1",
+          "name": "Postura do Cachorro Olhando para Baixo (Adho Mukha Svanasana)",
+          "category": 5,
+          "description": "Postura clássica de yoga que alonga todo o corpo",
+          "instructions": [
+            "Comece na posição de quatro apoios",
+            "Eleve os quadris em direção ao teto",
+            "Estenda os braços e pernas",
+            "Pressione as mãos e pés contra o chão",
+            "Mantenha a cabeça entre os braços"
+          ],
+          "tips": "Mantenha as costas retas e respire profundamente",
+          "difficulty": "Iniciante",
+          "equipment": ["Tapete de yoga"],
+          "variations": ["Com blocos", "Com joelhos flexionados"],
+          "muscles": {
+            "primary": ["Ombros", "Isquiotibiais"],
+            "secondary": ["Core", "Panturrilhas"]
+          }
+        },
+        {
+          "id": "yoga_2",
+          "name": "Postura do Guerreiro I (Virabhadrasana I)",
+          "category": 5,
+          "description": "Postura em pé que fortalece e alonga",
+          "instructions": [
+            "Passo largo à frente com o pé direito",
+            "Flexione o joelho direito a 90 graus",
+            "Mantenha a perna traseira estendida",
+            "Eleve os braços acima da cabeça",
+            "Olhe para cima entre os braços"
+          ],
+          "tips": "Mantenha o joelho da frente alinhado com o tornozelo",
+          "difficulty": "Intermediário",
+          "equipment": ["Tapete de yoga"],
+          "variations": ["Com suporte na parede", "Com blocos"],
+          "muscles": {
+            "primary": ["Quadríceps", "Flexores do quadril"],
+            "secondary": ["Ombros", "Core"]
+          }
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Alongamento",
+      "exercises": [
+        {
+          "id": "stretch_1",
+          "name": "Alongamento de Isquiotibiais em Pé",
+          "category": 6,
+          "description": "Alongamento para parte posterior das pernas",
+          "instructions": [
+            "Em pé, flexione o tronco à frente",
+            "Mantenha as pernas estendidas",
+            "Tente tocar os pés com as mãos",
+            "Relaxe a cabeça e pescoço",
+            "Mantenha a posição por 30 segundos"
+          ],
+          "tips": "Não force além do limite, sinta o alongamento confortável",
+          "difficulty": "Iniciante",
+          "equipment": ["Nenhum"],
+          "variations": ["Sentado", "Uma perna por vez"],
+          "muscles": {
+            "primary": ["Isquiotibiais"],
+            "secondary": ["Lombar"]
+          }
+        },
+        {
+          "id": "stretch_2",
+          "name": "Alongamento do Piriforme",
+          "category": 6,
+          "description": "Alongamento para região glútea e quadril",
+          "instructions": [
+            "Deite-se de costas",
+            "Cruze uma perna sobre a outra",
+            "Puxe o joelho em direção ao peito",
+            "Mantenha a outra perna estendida",
+            "Segure por 30 segundos"
+          ],
+          "tips": "Respire profundamente e relaxe os músculos",
+          "difficulty": "Iniciante",
+          "equipment": ["Tapete"],
+          "variations": ["Sentado", "Em pé"],
+          "muscles": {
+            "primary": ["Glúteos", "Piriforme"],
+            "secondary": ["Rotadores do quadril"]
+          }
+        },
+        {
+          "id": "stretch_3",
+          "name": "Alongamento do Peitoral na Parede",
+          "category": 6,
+          "description": "Alongamento para músculos do peito",
+          "instructions": [
+            "Fique em pé próximo a uma parede",
+            "Coloque o antebraço na parede, cotovelo na altura do ombro",
+            "Gire o corpo para o lado oposto",
+            "Mantenha por 30 segundos",
+            "Repita do outro lado"
+          ],
+          "tips": "Mantenha o braço paralelo ao solo",
+          "difficulty": "Iniciante",
+          "equipment": ["Parede"],
+          "variations": ["Com bastão", "Dinâmico"],
+          "muscles": {
+            "primary": ["Peitoral maior"],
+            "secondary": ["Deltóide anterior"]
+          }
+        }
+      ]
+    }
+  ]
+} 

@@ -10,7 +10,7 @@ flutter create -t app temp_app
 
 # Cria estrutura de diretórios
 echo "📂 Criando estrutura de diretórios..."
-mkdir -p temp_app/assets/{icons,fonts,images}
+mkdir -p temp_app/assets/{icons,fonts,images,data}
 
 # Cria um pubspec.yaml com todas as dependências necessárias
 echo "📝 Configurando pubspec.yaml..."
@@ -46,6 +46,7 @@ EOL
 # Copia os arquivos necessários
 echo "📋 Copiando arquivos..."
 cp -r AppGymFlow/lib/* temp_app/lib/
+cp -r AppGymFlow/assets/data/* temp_app/assets/data/
 
 # Entra no projeto temporário
 cd temp_app

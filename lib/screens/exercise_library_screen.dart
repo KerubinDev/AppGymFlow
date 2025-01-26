@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/exercise_api_service.dart';
+import '../services/exercise_database_service.dart';
 import '../models/exercise_model.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
@@ -10,12 +10,12 @@ class ExerciseLibraryScreen extends StatefulWidget {
 }
 
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
-  final ExerciseApiService _api = ExerciseApiService();
+  final ExerciseDatabaseService _db = ExerciseDatabaseService();
   List<Map<String, dynamic>> _exercises = [];
-  List<Map<String, dynamic>> _muscles = [];
+  List<Map<String, dynamic>> _muscleGroups = [];
   bool _isLoading = true;
   String _searchQuery = '';
-  int? _selectedMuscleId;
+  String? _selectedMuscleGroup;
 
   @override
   void initState() {
@@ -26,17 +26,17 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
     try {
-      final muscles = await _api.getMuscles();
+      final muscleGroups = await _db.getMuscleGroups();
       List<Map<String, dynamic>> exercises;
       
-      if (_selectedMuscleId != null) {
-        exercises = await _api.getExercisesByMuscle(_selectedMuscleId!);
+      if (_selectedMuscleGroup != null) {
+        exercises = await _db.getExercisesByCategory(int.parse(_selectedMuscleGroup!));
       } else {
-        exercises = await _api.getExercises();
+        exercises = await _db.getExercises();
       }
 
       setState(() {
-        _muscles = muscles;
+        _muscleGroups = muscleGroups;
         _exercises = exercises;
         _isLoading = false;
       });
@@ -100,22 +100,22 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               children: [
                 FilterChip(
                   label: const Text('Todos'),
-                  selected: _selectedMuscleId == null,
+                  selected: _selectedMuscleGroup == null,
                   onSelected: (selected) {
-                    setState(() => _selectedMuscleId = null);
+                    setState(() => _selectedMuscleGroup = null);
                     _loadData();
                   },
                   selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                 ),
                 const SizedBox(width: 8),
-                ..._muscles.map((muscle) {
+                ..._muscleGroups.map((muscle) {
                   return Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: FilterChip(
                       label: Text(muscle['name']),
-                      selected: _selectedMuscleId == muscle['id'],
+                      selected: _selectedMuscleGroup == muscle['id'].toString(),
                       onSelected: (selected) {
-                        setState(() => _selectedMuscleId = muscle['id']);
+                        setState(() => _selectedMuscleGroup = muscle['id'].toString());
                         _loadData();
                       },
                       selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
