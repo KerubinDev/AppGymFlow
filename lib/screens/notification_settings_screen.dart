@@ -59,6 +59,36 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
               onPressed: _saveSettings,
               isLoading: _isLoading,
             ),
+            CustomButton(
+              text: 'Testar Notificação',
+              onPressed: () async {
+                try {
+                  final now = DateTime.now().add(const Duration(seconds: 5));
+                  await _notificationService.showWorkoutReminder(
+                    title: 'Teste de Notificação',
+                    body: 'Se você está vendo isso, as notificações estão funcionando! 🎉',
+                    scheduledDate: now,
+                  );
+                  
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Notificação agendada para 5 segundos'),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Erro ao testar notificação: $e'),
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
+            const SizedBox(height: 16),
           ],
         ],
       ),

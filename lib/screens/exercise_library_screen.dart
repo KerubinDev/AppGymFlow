@@ -30,9 +30,20 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       List<Map<String, dynamic>> exercises;
       
       if (_selectedMuscleGroup != null) {
-        exercises = await _db.getExercisesByCategory(int.parse(_selectedMuscleGroup!));
+        final groupId = int.parse(_selectedMuscleGroup!);
+        final selectedGroup = muscleGroups.firstWhere((g) => g['id'] == groupId);
+        exercises = List<Map<String, dynamic>>.from(selectedGroup['exercises']);
       } else {
-        exercises = await _db.getExercises();
+        exercises = [];
+        for (var group in muscleGroups) {
+          if (group['exercises'] != null) {
+            final groupExercises = List<Map<String, dynamic>>.from(group['exercises']);
+            for (var exercise in groupExercises) {
+              exercise['muscleGroup'] = group['name'];
+            }
+            exercises.addAll(groupExercises);
+          }
+        }
       }
 
       setState(() {
@@ -61,14 +72,24 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     Navigator.pop(context, newExercise);
   }
 
+  List<Map<String, dynamic>> _getFilteredExercises() {
+    return _exercises.where((exercise) {
+      final name = exercise['name'].toString().toLowerCase();
+      final searchMatch = name.contains(_searchQuery.toLowerCase());
+      
+      if (_selectedMuscleGroup == null) {
+        return searchMatch;
+      }
+      
+      final groupId = int.parse(_selectedMuscleGroup!);
+      final exerciseGroupId = exercise['category'];
+      return searchMatch && exerciseGroupId == groupId;
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final filteredExercises = _exercises.where((exercise) {
-      return exercise['name']
-          .toString()
-          .toLowerCase()
-          .contains(_searchQuery.toLowerCase());
-    }).toList();
+    final filteredExercises = _getFilteredExercises();
 
     return Scaffold(
       appBar: AppBar(
@@ -155,6 +176,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 8),
+                          Text(
+                            'Grupo: ${exercise['muscleGroup'] ?? 'Não especificado'}',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
                           Text(
                             exercise['description'] ?? 'Sem descrição disponível',
                             maxLines: 2,

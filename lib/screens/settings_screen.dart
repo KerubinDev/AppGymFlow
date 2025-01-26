@@ -4,6 +4,7 @@ import '../providers/theme_provider.dart';
 import '../providers/auth_provider.dart';
 import 'notification_settings_screen.dart';
 import 'login_screen.dart';
+import 'edit_profile_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -51,7 +52,12 @@ class SettingsScreen extends StatelessWidget {
             leading: const Icon(Icons.person_outline),
             title: const Text('Editar Perfil'),
             onTap: () {
-              // Implementar navegação para edição de perfil
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditProfileScreen(),
+                ),
+              );
             },
           ),
           ListTile(

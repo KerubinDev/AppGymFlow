@@ -2,6 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter/material.dart';
 
 class NotificationSettings {
   final bool enabled;
@@ -31,32 +32,71 @@ class NotificationService {
   static const String _daysKey = 'notification_days';
 
   Future<void> initialize() async {
+    // Inicializa timezone
     tz.initializeTimeZones();
     
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-    
-    const settings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
+    // Configurações para Android
+    const androidSettings = AndroidNotificationDetails(
+      'workout_reminders',
+      'Lembretes de Treino',
+      channelDescription: 'Notificações para lembretes de treino',
+      importance: Importance.max,
+      priority: Priority.high,
+      enableVibration: true,
+      playSound: true,
+      icon: '@mipmap/ic_launcher',
+      largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+      enableLights: true,
+      color: Color.fromARGB(255, 33, 150, 243),
+      ledColor: Color.fromARGB(255, 33, 150, 243),
+      ledOnMs: 1000,
+      ledOffMs: 500,
     );
 
+    // Configurações para iOS
+    const iosSettings = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: 'default',
+      badgeNumber: 1,
+    );
+
+    // Configurações de inicialização
+    const initSettings = InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: DarwinInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+        defaultPresentAlert: true,
+        defaultPresentBadge: true,
+        defaultPresentSound: true,
+      ),
+    );
+
+    // Inicializa o plugin
     await _notifications.initialize(
-      settings,
+      initSettings,
       onDidReceiveNotificationResponse: _onNotificationTap,
     );
 
-    // Solicita permissões no iOS
+    // Solicita permissões (importante para iOS e Android 13+)
+    await _requestPermissions();
+  }
+
+  Future<void> _requestPermissions() async {
+    // Permissões para iOS
     await _notifications.resolvePlatformSpecificImplementation<
         IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
       alert: true,
       badge: true,
       sound: true,
     );
+
+    // Permissões para Android (API 33+)
+    await _notifications.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
   }
 
   Future<NotificationSettings> getNotificationSettings() async {
@@ -130,36 +170,55 @@ class NotificationService {
     required String title,
     required String body,
     required DateTime scheduledTime,
-    required List<int> days, // 1 = Monday, 7 = Sunday
+    required List<int> days,
   }) async {
-    const androidDetails = AndroidNotificationDetails(
-      'weekly_reminders',
-      'Lembretes Semanais',
-      channelDescription: 'Notificações para lembretes semanais de treino',
-      importance: Importance.high,
-      priority: Priority.high,
+    print('Agendando notificações para os dias: $days'); // Debug
+
+    const notificationDetails = NotificationDetails(
+      android: AndroidNotificationDetails(
+        'workout_reminders',
+        'Lembretes de Treino',
+        channelDescription: 'Notificações para lembretes de treino',
+        importance: Importance.max,
+        priority: Priority.high,
+        enableVibration: true,
+        playSound: true,
+        icon: '@mipmap/ic_launcher',
+        largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+      ),
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+        sound: 'default',
+        badgeNumber: 1,
+      ),
     );
 
-    const iosDetails = DarwinNotificationDetails();
-    const details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
+    // Cancela notificações existentes antes de agendar novas
+    await cancelAllNotifications();
 
     for (final day in days) {
       final scheduledDate = _nextInstanceOfDay(scheduledTime, day);
       
-      await _notifications.zonedSchedule(
-        day, // ID único para cada dia
-        title,
-        body,
-        scheduledDate,
-        details,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
-      );
+      print('Agendando para: ${scheduledDate.toString()}'); // Debug
+      
+      try {
+        await _notifications.zonedSchedule(
+          day, // ID único para cada dia
+          title,
+          body,
+          scheduledDate,
+          notificationDetails,
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+          matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+        );
+        print('Notificação agendada com sucesso para dia $day'); // Debug
+      } catch (e) {
+        print('Erro ao agendar notificação: $e'); // Debug
+      }
     }
   }
 

@@ -6,22 +6,25 @@ class ExerciseDatabaseService {
   
   Future<List<Map<String, dynamic>>> getExercises() async {
     try {
-      print('Tentando carregar arquivo: $_dbPath'); // Debug
       final String jsonString = await rootBundle.loadString(_dbPath);
-      print('Conteúdo carregado: ${jsonString.substring(0, 100)}...'); // Debug
       final Map<String, dynamic> data = json.decode(jsonString);
       
       List<Map<String, dynamic>> allExercises = [];
       for (var group in data['muscleGroups']) {
-        allExercises.addAll(List<Map<String, dynamic>>.from(group['exercises']));
+        if (group['exercises'] != null) {
+          final exercises = List<Map<String, dynamic>>.from(group['exercises']);
+          // Adiciona o grupo muscular a cada exercício
+          for (var exercise in exercises) {
+            exercise['muscleGroup'] = group['name'];
+          }
+          allExercises.addAll(exercises);
+        }
       }
       
       return allExercises;
-    } catch (e, stackTrace) {
-      print('Erro detalhado ao carregar exercícios:');
-      print('Erro: $e');
-      print('Stack trace: $stackTrace');
-      throw Exception('Erro ao carregar exercícios: $e');
+    } catch (e) {
+      print('Erro ao carregar exercícios: $e');
+      rethrow;
     }
   }
 
@@ -32,15 +35,23 @@ class ExerciseDatabaseService {
       
       List<Map<String, dynamic>> categoryExercises = [];
       for (var group in data['muscleGroups']) {
-        final exercises = List<Map<String, dynamic>>.from(group['exercises']);
-        categoryExercises.addAll(
-          exercises.where((e) => e['category'] == categoryId)
-        );
+        if (group['exercises'] != null) {
+          final exercises = List<Map<String, dynamic>>.from(group['exercises'])
+              .where((e) => e['category'] == categoryId)
+              .toList();
+          
+          // Adiciona o grupo muscular a cada exercício
+          for (var exercise in exercises) {
+            exercise['muscleGroup'] = group['name'];
+          }
+          categoryExercises.addAll(exercises);
+        }
       }
       
       return categoryExercises;
     } catch (e) {
-      throw Exception('Erro ao carregar exercícios: $e');
+      print('Erro ao carregar exercícios por categoria: $e');
+      rethrow;
     }
   }
 
