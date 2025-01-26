@@ -33,6 +33,8 @@ dependencies:
   provider: ^6.1.2
   shared_preferences: ^2.2.2
   intl: ^0.17.0
+  flutter_local_notifications: ^16.3.2
+  timezone: ^0.9.2
 
 dev_dependencies:
   flutter_test:
@@ -41,6 +43,22 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  
+  assets:
+    - assets/images/logo.png
+    - assets/images/google_logo.png
+    - assets/icons/
+    - assets/data/
+    - assets/data/exercises_db.json
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
 EOL
 
 # Copia os arquivos necessários
