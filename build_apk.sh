@@ -2,6 +2,33 @@
 
 echo "🚀 Iniciando build do GymFlow..."
 
+# Função para verificar e baixar fontes
+check_and_download_fonts() {
+    local fonts_dir="$1"
+    local font_files=("Poppins-Regular.ttf" "Poppins-Medium.ttf" "Poppins-Bold.ttf")
+    local base_url="https://github.com/google/fonts/raw/main/ofl/poppins"
+    
+    mkdir -p "$fonts_dir"
+    
+    for font in "${font_files[@]}"; do
+        if [ ! -f "$fonts_dir/$font" ]; then
+            echo "📥 Baixando fonte $font..."
+            wget -q "$base_url/$font" -O "$fonts_dir/$font"
+            if [ $? -ne 0 ]; then
+                echo "❌ Erro ao baixar $font"
+                return 1
+            fi
+        fi
+    done
+    return 0
+}
+
+# Verifica e baixa as fontes no projeto original
+if ! check_and_download_fonts "AppGymFlow/assets/fonts"; then
+    echo "❌ Erro ao configurar fontes"
+    exit 1
+fi
+
 # Cria novo projeto
 echo "📁 Criando novo projeto..."
 cd ..
@@ -65,8 +92,8 @@ EOL
 echo "📋 Copiando arquivos..."
 cp -r AppGymFlow/lib/* temp_app/lib/
 cp -r AppGymFlow/assets/data/exercises_db.json temp_app/assets/data/
-cp -r AppGymFlow/assets/images/* temp_app/assets/images/
-cp -r AppGymFlow/assets/icons/* temp_app/assets/icons/
+cp -r AppGymFlow/assets/images/* temp_app/assets/images/ 2>/dev/null || true
+cp -r AppGymFlow/assets/icons/* temp_app/assets/icons/ 2>/dev/null || true
 cp -r AppGymFlow/assets/fonts/* temp_app/assets/fonts/
 
 # Entra no projeto temporário
