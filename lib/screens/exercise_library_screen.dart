@@ -77,11 +77,16 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(16.0),
             child: TextField(
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Buscar exercício',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: Theme.of(context).colorScheme.surface,
               ),
               onChanged: (value) {
                 setState(() => _searchQuery = value);
@@ -90,7 +95,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
                 FilterChip(
@@ -100,6 +105,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     setState(() => _selectedMuscleId = null);
                     _loadData();
                   },
+                  selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                 ),
                 const SizedBox(width: 8),
                 ..._muscles.map((muscle) {
@@ -112,6 +118,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                         setState(() => _selectedMuscleId = muscle['id']);
                         _loadData();
                       },
+                      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                     ),
                   );
                 }),
@@ -125,19 +132,41 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           else
             Expanded(
               child: ListView.builder(
+                padding: const EdgeInsets.all(16),
                 itemCount: filteredExercises.length,
                 itemBuilder: (context, index) {
                   final exercise = filteredExercises[index];
-                  return ListTile(
-                    title: Text(exercise['name']),
-                    subtitle: Text(
-                      exercise['description'] ?? 'Sem descrição disponível',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () => _addExerciseToWorkout(exercise),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(16),
+                      title: Text(
+                        exercise['name'],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 8),
+                          Text(
+                            exercise['description'] ?? 'Sem descrição disponível',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.add_circle),
+                        color: Theme.of(context).colorScheme.primary,
+                        onPressed: () => _addExerciseToWorkout(exercise),
+                      ),
                     ),
                   );
                 },
