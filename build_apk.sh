@@ -65,6 +65,9 @@ EOL
 echo "📋 Copiando arquivos..."
 cp -r AppGymFlow/lib/* temp_app/lib/
 cp -r AppGymFlow/assets/data/exercises_db.json temp_app/assets/data/
+cp -r AppGymFlow/assets/images/* temp_app/assets/images/
+cp -r AppGymFlow/assets/icons/* temp_app/assets/icons/
+cp -r AppGymFlow/assets/fonts/* temp_app/assets/fonts/
 
 # Entra no projeto temporário
 cd temp_app
