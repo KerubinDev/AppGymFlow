@@ -17,9 +17,10 @@ class ExerciseDatabaseService {
       }
       
       return allExercises;
-    } catch (e, stackTrace) { // Adicionado stackTrace
-      print('Erro detalhado: $e'); // Debug
-      print('Stack trace: $stackTrace'); // Debug
+    } catch (e, stackTrace) {
+      print('Erro detalhado ao carregar exercícios:');
+      print('Erro: $e');
+      print('Stack trace: $stackTrace');
       throw Exception('Erro ao carregar exercícios: $e');
     }
   }

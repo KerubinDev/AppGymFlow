@@ -8,6 +8,7 @@ import 'providers/auth_provider.dart';
 import 'providers/theme_provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
+import 'services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +19,9 @@ void main() async {
   final workoutProvider = WorkoutProvider();
   
   await workoutProvider.loadWorkouts();
+  
+  // Inicializa o serviço de notificações
+  await NotificationService().initialize();
 
   runApp(
     MultiProvider(
