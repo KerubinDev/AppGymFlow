@@ -16,45 +16,76 @@ class DatabaseService {
   // Métodos para Usuários
   Future<void> saveUser(UserModel user) async {
     final prefs = await _prefs;
-    final users = await _getUsers();
-    users[user.id] = user;
+    List<Map<String, dynamic>> users = [];
     
-    await prefs.setString(_usersKey, jsonEncode(
-      users.map((key, value) => MapEntry(key, value.toMap()))
-    ));
+    final usersJson = prefs.getString(_usersKey);
+    if (usersJson != null) {
+      users = List<Map<String, dynamic>>.from(jsonDecode(usersJson));
+    }
+    
+    users.add(user.toMap());
+    await prefs.setString(_usersKey, jsonEncode(users));
   }
 
   Future<UserModel?> getUser(String email, String password) async {
-    final users = await _getUsers();
-    try {
-      return users.values.firstWhere(
-        (user) => user.email == email && user.password == password
+    final prefs = await _prefs;
+    final usersJson = prefs.getString(_usersKey);
+    if (usersJson != null) {
+      final List<dynamic> users = jsonDecode(usersJson);
+      final userMap = users.firstWhere(
+        (u) => u['email'] == email && u['password'] == password,
+        orElse: () => null,
       );
-    } catch (e) {
-      return null;
+      if (userMap != null) {
+        return UserModel.fromMap(userMap as Map<String, dynamic>);
+      }
     }
+    return null;
+  }
+
+  Future<UserModel?> getUserByEmail(String email) async {
+    final prefs = await _prefs;
+    final usersJson = prefs.getString(_usersKey);
+    if (usersJson != null) {
+      final List<dynamic> users = jsonDecode(usersJson);
+      final userMap = users.firstWhere(
+        (u) => u['email'] == email,
+        orElse: () => null,
+      );
+      if (userMap != null) {
+        return UserModel.fromMap(userMap as Map<String, dynamic>);
+      }
+    }
+    return null;
   }
 
   Future<UserModel?> getUserById(String id) async {
-    final users = await _getUsers();
-    return users[id];
+    final prefs = await _prefs;
+    final usersJson = prefs.getString(_usersKey);
+    if (usersJson != null) {
+      final List<dynamic> users = jsonDecode(usersJson);
+      final userMap = users.firstWhere(
+        (u) => u['id'] == id,
+        orElse: () => null,
+      );
+      if (userMap != null) {
+        return UserModel.fromMap(userMap as Map<String, dynamic>);
+      }
+    }
+    return null;
   }
 
   Future<void> updateUser(UserModel user) async {
-    await saveUser(user);
-  }
-
-  Future<Map<String, UserModel>> _getUsers() async {
     final prefs = await _prefs;
-    final String? usersJson = prefs.getString(_usersKey);
-    
-    if (usersJson == null) return {};
-
-    final Map<String, dynamic> usersMap = jsonDecode(usersJson);
-    return usersMap.map((key, value) => MapEntry(
-      key,
-      UserModel.fromMap(value as Map<String, dynamic>),
-    ));
+    final usersJson = prefs.getString(_usersKey);
+    if (usersJson != null) {
+      List<Map<String, dynamic>> users = List<Map<String, dynamic>>.from(jsonDecode(usersJson));
+      final index = users.indexWhere((u) => u['id'] == user.id);
+      if (index != -1) {
+        users[index] = user.toMap();
+        await prefs.setString(_usersKey, jsonEncode(users));
+      }
+    }
   }
 
   // Métodos para Workouts
