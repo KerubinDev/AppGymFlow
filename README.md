@@ -183,29 +183,3 @@ Projeto sob licença GNU GPL v3. Consulte [LICENSE](LICENSE) para detalhes.
   
 [![Stack](https://img.shields.io/badge/Stack-Flutter%20%7C%20Dart-02569B?style=for-the-badge)](https://github.com/KerubinDev/AppGymFlow)
 </div>
-
-# GymFlow
-
-## Configuração do Projeto
-
-### 1. Fontes
-O projeto usa a fonte Poppins. Siga os passos abaixo para configurá-la:
-
-1. Baixe os arquivos da fonte Poppins:
-   ```bash
-   mkdir -p assets/fonts
-   cd assets/fonts
-   
-   # Baixa as fontes
-   wget https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Regular.ttf
-   wget https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Medium.ttf
-   wget https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Bold.ttf
-   ```
-
-2. Verifique se os arquivos foram baixados corretamente:
-   ```bash
-   ls -l assets/fonts/
-   ```
-
-### 2. Outros Assets
-...
